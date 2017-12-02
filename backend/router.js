@@ -48,6 +48,7 @@ module.exports = function(app) {
     // Set up variables.
     var express = require('express')
     var apiRouter = express.Router()
+    var MessagingResponse = require('twilio').twiml.MessagingResponse
 
     apiRouter.get('*', function(req,res,next) {
         var url = req.originalUrl
@@ -63,7 +64,9 @@ module.exports = function(app) {
     function handleMessage(req,res,next,message,number) {
         console.log(message)
         console.log(number)
-        res.sendStatus(200)
+        
+        var response = new MessagingResponse()
+        response.message('Thanks for reaching out.')
     }
 
     apiRouter.post('*', function(req,res,next) {
