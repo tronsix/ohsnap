@@ -15,7 +15,8 @@ var dburl = process.env.MONGODB_URI
 var db = mongoose.connection
 
 mongoose.Promise = global.Promise
-mongoose.connect(dburl)
+// mongoose.connect(dburl)
+mongoose.connect(dburl, { useMongoClient: true });
 
 db.on('error',console.error.bind(console,'error: '))
 db.once('open',function(){
@@ -42,8 +43,8 @@ db.once('open',function(){
         })
     }))
     
-    // us this router
-    require('./backend/routerMain.js')(app)
+    // Route all requests here.
+    require('./backend/router.js')(app)
 
     app.listen(port,function(){
         console.log('Connected to app')
