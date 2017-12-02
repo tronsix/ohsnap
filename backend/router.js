@@ -23,9 +23,14 @@ module.exports = function(app) {
                 }
             }
             console.log('Looking for photos')
-            res.json({
-                images:imageArray
-            })
+            res.header("Access-Control-Allow-Origin", '*');
+            res.header("Access-Control-Allow-Credentials", true);
+            res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+            res.header("Access-Control-Allow-Headers", 'Origin,X-Requested-With,Content-Type,Accept,content-type,application/json');
+            res.json({images:imageArray})
+            // res.render('../html/index', {
+            //     images:imageArray
+            // })
         })
     }
 
@@ -36,8 +41,13 @@ module.exports = function(app) {
 
     // Send the home page.
     function goHome(req,res,next) {
-        var path = require('path')
-        res.sendFile(path.join(__dirname, '../html', 'index.html'))
+
+        // var path = require('path')
+        // var homeUrl = path.join(__dirname, '../html', 'index.html')
+        var array = lookForPhotos(req,res,next)
+        res.render('../html/index', {
+            images:array
+        })
     }
 
     // Set up variables.
@@ -48,7 +58,7 @@ module.exports = function(app) {
     apiRouter.get('*', function(req,res,next) {
         var url = req.originalUrl
         if (url == '/') {
-            goHome(req,res,next)
+            lookForPhotos(req,res,next)
         } else if (url == '/photos') {
             lookForPhotos(req,res,next)
         } else {

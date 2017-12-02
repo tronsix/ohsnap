@@ -23,6 +23,9 @@ db.once('open',function(){
 
     var app = express()
 
+    // set the view engine to ejs
+    app.set('view engine', 'ejs')
+
     app.use(express.static('./public'))
     app.use(cookieSession({
         keys:[process.env.COOKIE_SECRET_OR_KEY]
