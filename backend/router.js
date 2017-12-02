@@ -64,9 +64,10 @@ module.exports = function(app) {
     function handleMessage(req,res,next,message,number) {
         console.log(message)
         console.log(number)
-        
+
         var response = new MessagingResponse()
-        response.message('Thanks for reaching out.')
+        res.send(response.message('Thanks for reaching out.').toString())
+        
     }
 
     apiRouter.post('*', function(req,res,next) {
