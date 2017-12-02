@@ -1,64 +1,37 @@
 module.exports = function(app) {
 
-    // Handle image files.
-    function uploadImage() {
-        
-        }
-
     // Interact with the AWS api.
-    function imageRelated() {
+    function lookForPhotos(req,res,next) {
         // For image outside the router.
-
-        var mongoose = require('mongoose')
-        var ImageSchema = new mongoose.Schema({
-            group:{type:String},
-            image:{type:String},
-
-            url:{type:String}
-        })
-
-        var Image = mongoose.model('Image', ImageSchema)
-
-        var express = require('express')
-        var apiRouter = express.Router()
-        var Image = require("./image.js").Image
+        // var mongoose = require('mongoose')
+        // var ImageSchema = new mongoose.Schema({
+        //     group:{type:String},
+        //     image:{type:String},
+        //     url:{type:String}
+        // })
+        // var Image = mongoose.model('Image', ImageSchema)
+        // var Image = require("./image.js").Image
         var async = require('async')
-        var reader = require('fs')
-
         var aws = require('aws-sdk')
-
         aws.config = new aws.Config()
-        aws.config.accessKeyId = process.env.AWS_SES_YY_ACCESS
-        aws.config.secretAccessKey = process.env.AWS_SES_YY_SECRET
+        aws.config.accessKeyId = process.env.AWS_ACCESS_KEY_ID
+        aws.config.secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY
         aws.config.region = "us-east-1"
         var s3 = new aws.S3()
-        var s3Bucket = new aws.S3( { params: {Bucket: 'yumyum-images'} } )
-        // For image inside the Router
-        var fileName = req.query['file-name']
-        var fileType = req.query['file-type']
-        var s3Params = {
-            Bucket: 'yumyum-images',
-            Key: fileName,
-            Expires: 60,
-            ContentType: fileType,
-            ACL: 'public-read'
-        }
-        s3.getSignedUrl('putObject', s3Params, (err, data) => {
-            if(err){
-                console.log(err);
-                return res.json({
-                    status:false,
-                    reason:err
-                })
+        var s3Params = { Bucket: 'nameless-fortress-95164' }
+        s3.listObjects(s3Params,function(err,data){
+            if (err) {
+                console.log('S3 Error: ')
+                console.log(err)
+            } else {
+                for (var key in data.Contents) {
+                    var imageName = data.Contents[key]['Key']
+                    var url = 'https://s3.amazonaws.com/nameless-fortress-95164/' + imageName
+                    console.log(url)
+                }
             }
-            var returnData = {
-                signedRequest: data,
-                url: 'https://yumyum-images.s3.amazonaws.com/' + fileName
-            };
-            res.write(JSON.stringify(returnData));
-            res.end();
+            res.send('Looking for photos')
         })
-
     }
 
     // Send a plain text page with text.
@@ -78,22 +51,23 @@ module.exports = function(app) {
 
     apiRouter.get('*', function(req,res,next) {
         var url = req.originalUrl
-        console.log('GET Request: ' + url)
-        // console.log(req)
         if (url == '/') {
-            console.log('Sending home')
             goHome(req,res,next)
+        } else if (url == '/photos') {
+            lookForPhotos(req,res,next)
         } else {
             res.send('Cant find this page: ' + url)
         }
     })
 
     apiRouter.post('*', function(req,res,next) {
-        console.log('POST Request: ' + req.url)
-        if (req.url == '/') {
-            goHome(req,res,next)
+        var url = req.originalUrl
+        if (url == '/message') {
+            console.log('From twilio')
+            console.log(req)
+            res.sendStatus(200)
         } else {
-            res.send('Cant find that page')
+            res.sendStatus(200)
         }
     })
 
