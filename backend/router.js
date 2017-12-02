@@ -65,8 +65,13 @@ module.exports = function(app) {
         console.log(message)
         console.log(number)
 
-        var response = new MessagingResponse()
-        res.send(response.message('Thanks for reaching out.').toString())
+        var twiml = new MessagingResponse()
+        twiml.message('Hi!')
+        res.writeHead(200, {'Content-Type': 'text/xml'})
+        res.end(twiml.toString())
+
+        // var response = new MessagingResponse()
+        // res.send(response.message('Thanks for reaching out.').toString())
         
     }
 
