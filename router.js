@@ -1,5 +1,7 @@
 module.exports = function(app) {
-    app.use('/*',function(){
-        console.log('connecting to this app')
-    })
+    var uploadimage = require('./uploadImage.js')
+    app.use('/upload', uploadimage)
+    
+    var gethome = require('./gethome.js')
+    app.use('*', gethome)
 }

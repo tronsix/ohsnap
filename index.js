@@ -41,7 +41,12 @@ db.once('open',function(){
             mongooseConnection:db
         })
     }))
+    // us this router
     require('./router.js')(app)
+    // or route right here
+    // app.use(function(req, res){
+    //     res.end('Hello from Connect!\n');
+    //   });
     app.listen(port,function(){
         console.log('Connected to app')
     })
