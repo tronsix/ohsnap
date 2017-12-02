@@ -64,8 +64,7 @@ module.exports = function(app) {
         var url = req.originalUrl
         if (url == '/message') {
             console.log('From twilio')
-            console.log(req)
-            console.log(req.params)
+            console.log(req.body)
             res.sendStatus(200)
         } else {
             res.sendStatus(200)
