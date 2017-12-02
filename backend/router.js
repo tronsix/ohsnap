@@ -60,12 +60,18 @@ module.exports = function(app) {
         }
     })
 
+    function handleMessage(req,res,next,message,number) {
+        console.log(message)
+        console.log(number)
+        res.sendStatus(200)
+    }
+
     apiRouter.post('*', function(req,res,next) {
         var url = req.originalUrl
         if (url == '/message') {
-            console.log('From twilio')
-            console.log(req.body)
-            res.sendStatus(200)
+            var body = req.body['Body']
+            var from = req.body['From']
+            handleMessage(req,res,next,body,from)
         } else {
             res.sendStatus(200)
         }
