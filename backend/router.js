@@ -24,6 +24,7 @@ module.exports = function(app) {
                 console.log(err)
             } else {
                 for (var key in data.Contents) {
+                    var imageName = data.Contents[key]['Key']
                     var url = 'https://s3.amazonaws.com/nameless-fortress-95164/' + imageName
                     imageArray.push(url)
                 }
