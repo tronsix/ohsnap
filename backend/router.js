@@ -64,6 +64,8 @@ module.exports = function(app) {
                         var noExtension = imageName.replace('.jpg','')
                         var group = noExtension.split('_')[0]
                         var imgNumber = noExtension.split('_')[1]
+                        console.log(group)
+                        console.log(groupNumber)
                         var url = 'https://nameless-fortress-95164.herokuapp.com/' + imageName
                         // if (Number(group) == Number(groupNumber)) {
                         //     twiml.message(url)
