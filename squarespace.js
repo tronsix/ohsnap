@@ -36,6 +36,7 @@ xhttp.onreadystatechange = function() {
 
           var a = document.createElement('a')
           a.href = images[i]
+          a.style.cursor = 'pointer'
           a.appendChild(image)
           var imgDiv = document.createElement('div')
           imgDiv.className = 'image-div'
