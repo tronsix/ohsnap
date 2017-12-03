@@ -64,12 +64,7 @@ module.exports = function(app) {
                         var noExtension = imageName.replace('.jpg','')
                         var group = noExtension.split('_')[0]
                         var imgNumber = noExtension.split('_')[1]
-                        var url = 'https://s3.amazonaws.com/nameless-fortress-95164/' + imageName
-                        console.log(imageName)
-                        console.log(noExtension)
-                        console.log(group)
-                        console.log(imgNumber)
-                        console.log(url)
+                        var url = 'https://nameless-fortress-95164.herokuapp.com/' + imageName
                         // if (Number(group) == Number(groupNumber)) {
                         //     twiml.message(url)
                         // }
@@ -89,6 +84,7 @@ module.exports = function(app) {
         })
     }
 
+
     // Set up variables.
     var async = require('async')
     var express = require('express')
@@ -101,7 +97,9 @@ module.exports = function(app) {
         if (url == '/photos') {
             showAllPhotos(req,res,next)
         } else {
-            res.send('Cant find this page: ' + url)
+            res.render('../html/index',{
+                image:url
+            })
         }
     })
 
