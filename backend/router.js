@@ -43,6 +43,8 @@ module.exports = function(app) {
         var s3array = createS3Object()
         var s3 = s3array[0]
         var s3Params = s3array[1]
+        console.log(s3)
+        console.log(s3Params)
         var groupArray = []
         var twiml = new MessagingResponse()
 
