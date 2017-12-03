@@ -54,6 +54,7 @@ module.exports = function(app) {
                 if (data.Contents.length < 1) {
                     twiml.message('Check back later!')
                 } else {
+                    twiml.message('Visit these links to see your images!')
                     for (var key in data.Contents) {
                         // includes name and extension like:
                         // 1_1.jpg
