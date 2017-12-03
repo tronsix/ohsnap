@@ -66,11 +66,10 @@ module.exports = function(app) {
                         var imgNumber = noExtension.split('_')[1]
                         console.log(group)
                         console.log(groupNumber)
-                        var url = 'https://nameless-fortress-95164.herokuapp.com/' + imageName
-                        // if (Number(group) == Number(groupNumber)) {
-                        //     twiml.message(url)
-                        // }
-                        twiml.message(url)
+                        if (Number(group) == Number(groupNumber)) {
+                            var url = 'https://nameless-fortress-95164.herokuapp.com/' + imageName
+                            twiml.message(url)
+                        }
                     }
                 }
 
