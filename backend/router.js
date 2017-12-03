@@ -41,7 +41,7 @@ module.exports = function(app) {
                 for (var key in data.Contents) {
                     var imageName = data.Contents[key]['Key']
                     var noExtension = imageName.replace('.jpg','')
-                    var groupNumber = noExtension.split('_')[0]
+                    var groupNumber = noExtension.split('_')[1]
                     if (Number(group) == Number(groupNumber)) {
                         var url = 'https://s3.amazonaws.com/nameless-fortress-95164/' + imageName
                         images.push(url)
