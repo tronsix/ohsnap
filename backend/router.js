@@ -38,44 +38,42 @@ module.exports = function(app) {
     }
 
     // Returns url for the group
-    function lookForGroup(req,res,next,group) {
+    function lookForGroup(req,res,next,groupNumber) {
         var s3array = createS3Object()
         var s3 = s3array[0]
         var s3Params = s3array[1]
-        var imageArray = []
+        var groupArray = []
+        var twiml = new MessagingResponse()
 
         s3.listObjects(s3Params,function(err,data){
             if (err) {
                 console.log('S3 Error: ')
                 console.log(err)
             } else {
+
                 for (var key in data.Contents) {
+                    // includes name and extension like:
+                    // 1_1.jpg
+                    var imageName = data.Contents[key]['Key']
+                    var noExtension = imageName.replace('.jpg','')
+                    var group = noExtension.split('_')[0]
+                    var imgNumber = noExtension.split('_')[1]
                     var url = 'https://s3.amazonaws.com/nameless-fortress-95164/' + imageName
-                    imageArray.push(url)
+                    // if (Number(group) == Number(groupNumber)) {
+                    //     twiml.message(url)
+                    // }
+                    twiml.message(url)
                 }
+
+                res.header("Access-Control-Allow-Origin", '*');
+                res.header("Access-Control-Allow-Credentials", true);
+                res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+                res.header("Access-Control-Allow-Headers", 'Origin,X-Requested-With,Content-Type,Accept,content-type,application/json');
+    
+                res.writeHead(200, {'Content-Type': 'text/xml'})
+                res.end(twiml.toString())
+
             }
-            console.log('Looking for photos')
-            res.header("Access-Control-Allow-Origin", '*');
-            res.header("Access-Control-Allow-Credentials", true);
-            res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-            res.header("Access-Control-Allow-Headers", 'Origin,X-Requested-With,Content-Type,Accept,content-type,application/json');
-            res.json({images:imageArray})
-        })
-    }
-
-    // Send a plain text page with text.
-    function sendText(req,res,next) {
-        res.sendText('Hi from router')
-    }
-
-    // Send the home page.
-    function goHome(req,res,next) {
-
-        // var path = require('path')
-        // var homeUrl = path.join(__dirname, '../html', 'index.html')
-        var array = lookForPhotos(req,res,next)
-        res.render('../html/index', {
-            images:array
         })
     }
 
@@ -95,19 +93,11 @@ module.exports = function(app) {
         }
     })
 
-    function handleMessage(req,res,next,message,number) {
-        var twiml = new MessagingResponse()
-        twiml.message('Hi!')
-        res.writeHead(200, {'Content-Type': 'text/xml'})
-        res.end(twiml.toString())
-    }
-
     apiRouter.post('*', function(req,res,next) {
         var url = req.originalUrl
         if (url == '/message') {
-            var body = req.body['Body']
-            var from = req.body['From']
-            handleMessage(req,res,next,body,from)
+            var groupNumber = req.body['Body']
+            lookForGroup(req,res,next,groupNumber)
         } else {
             res.sendStatus(200)
         }
