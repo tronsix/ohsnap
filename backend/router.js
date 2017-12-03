@@ -43,8 +43,8 @@ module.exports = function(app) {
         var s3array = createS3Object()
         var s3 = s3array[0]
         var s3Params = s3array[1]
-        console.log(s3)
-        console.log(s3Params)
+        // console.log(s3)
+        // console.log(s3Params)
         var groupArray = []
         var twiml = new MessagingResponse()
 
@@ -54,23 +54,31 @@ module.exports = function(app) {
                 console.log(err)
             } else {
                 if (data.Contents.length < 1) {
-                    twiml.message('Check back later!')
+                    twiml.message('Visit the Trail of Lights Facebook page to see your photos!')
                 } else {
-                    twiml.message('Visit these links to see your images!')
+
                     for (var key in data.Contents) {
                         // includes name and extension like:
                         // 1_1.jpg
                         var imageName = data.Contents[key]['Key']
                         var noExtension = imageName.replace('.jpg','')
                         var group = noExtension.split('_')[0]
-                        var imgNumber = noExtension.split('_')[1]
                         console.log(group)
                         console.log(groupNumber)
                         if (Number(group) == Number(groupNumber)) {
                             var url = 'https://nameless-fortress-95164.herokuapp.com/' + imageName
-                            twiml.message(url)
+                            groupArray.push(url)
                         }
                     }
+
+                    if (groupArray.length < 1) {
+                        twiml.message('Visit the Trail of Lights Facebook page to see your photos!')
+                    } else {
+                        for (i = 0; i < groupArray.length; i++) { 
+                            twiml.message(groupArray[i])
+                        }
+                    }
+                    
                 }
 
                 res.header("Access-Control-Allow-Origin", '*');
