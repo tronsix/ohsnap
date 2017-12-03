@@ -56,21 +56,15 @@ module.exports = function(app) {
                 if (data.Contents.length < 1) {
                     twiml.message('Visit the Trail of Lights Facebook page to see your photos!')
                 } else {
-
                     for (var key in data.Contents) {
-                        // includes name and extension like:
-                        // 1_1.jpg
                         var imageName = data.Contents[key]['Key']
                         var noExtension = imageName.replace('.jpg','')
                         var group = noExtension.split('_')[0]
-                        console.log(group)
-                        console.log(groupNumber)
                         if (Number(group) == Number(groupNumber)) {
                             var url = 'https://nameless-fortress-95164.herokuapp.com/' + imageName
                             groupArray.push(url)
                         }
                     }
-
                     if (groupArray.length < 1) {
                         twiml.message('Visit the Trail of Lights Facebook page to see your photos!')
                     } else {
@@ -78,7 +72,6 @@ module.exports = function(app) {
                             twiml.message(groupArray[i])
                         }
                     }
-                    
                 }
 
                 res.header("Access-Control-Allow-Origin", '*');
@@ -93,6 +86,26 @@ module.exports = function(app) {
         })
     }
 
+    function sendGroupUrl(req,res,next,group) {
+        var twiml = new MessagingResponse()
+        var url = 'https://nameless-fortress-95164.herokuapp.com/' + group
+        twiml.message(url)
+        res.header("Access-Control-Allow-Origin", '*')
+        res.header("Access-Control-Allow-Credentials", true)
+        res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+        res.header("Access-Control-Allow-Headers", 'Origin,X-Requested-With,Content-Type,Accept,content-type,application/json')
+        res.writeHead(200, {'Content-Type': 'text/xml'})
+        res.end(twiml.toString())
+    }
+
+    function getGroupImages(req,res,next,group) {
+        var images = []
+
+        res.render('../html/index',{
+            groupNumber:group
+        })
+    }
+
 
     // Set up variables.
     var async = require('async')
@@ -102,23 +115,18 @@ module.exports = function(app) {
 
     apiRouter.get('*', function(req,res,next) {
         var url = req.originalUrl
-        // Sends object to page with all images.
         if (url == '/photos') {
             showAllPhotos(req,res,next)
         } else {
-            res.render('../html/index',{
-                image:url
-            })
+            getGroupImages(req,res,next,group)
         }
     })
 
     apiRouter.post('*', function(req,res,next) {
         var url = req.originalUrl
         if (url == '/message') {
-            var groupNumber = req.body['Body']
-            lookForGroup(req,res,next,groupNumber)
-        } else {
-            res.sendStatus(200)
+            var group = req.body['Body']
+            sendGroupUrl(req,res,next,group)
         }
     })
 
