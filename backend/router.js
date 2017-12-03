@@ -50,19 +50,22 @@ module.exports = function(app) {
                 console.log('S3 Error: ')
                 console.log(err)
             } else {
-
-                for (var key in data.Contents) {
-                    // includes name and extension like:
-                    // 1_1.jpg
-                    var imageName = data.Contents[key]['Key']
-                    var noExtension = imageName.replace('.jpg','')
-                    var group = noExtension.split('_')[0]
-                    var imgNumber = noExtension.split('_')[1]
-                    var url = 'https://s3.amazonaws.com/nameless-fortress-95164/' + imageName
-                    // if (Number(group) == Number(groupNumber)) {
-                    //     twiml.message(url)
-                    // }
-                    twiml.message(url)
+                if (data.Contents.length < 1) {
+                    twiml.message('Check back later!')
+                } else {
+                    for (var key in data.Contents) {
+                        // includes name and extension like:
+                        // 1_1.jpg
+                        var imageName = data.Contents[key]['Key']
+                        var noExtension = imageName.replace('.jpg','')
+                        var group = noExtension.split('_')[0]
+                        var imgNumber = noExtension.split('_')[1]
+                        var url = 'https://s3.amazonaws.com/nameless-fortress-95164/' + imageName
+                        // if (Number(group) == Number(groupNumber)) {
+                        //     twiml.message(url)
+                        // }
+                        twiml.message(url)
+                    }
                 }
 
                 res.header("Access-Control-Allow-Origin", '*');
