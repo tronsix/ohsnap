@@ -61,6 +61,11 @@ module.exports = function(app) {
                         var group = noExtension.split('_')[0]
                         var imgNumber = noExtension.split('_')[1]
                         var url = 'https://s3.amazonaws.com/nameless-fortress-95164/' + imageName
+                        console.log(imageName)
+                        console.log(noExtension)
+                        console.log(group)
+                        console.log(imgNumber)
+                        console.log(url)
                         // if (Number(group) == Number(groupNumber)) {
                         //     twiml.message(url)
                         // }
