@@ -33,9 +33,13 @@ xhttp.onreadystatechange = function() {
        for (var i = 0; i < images.length; i++) {
           var image = document.createElement('img')
           image.src = images[i]
+
+          var a = document.createElement('a')
+          a.href = images[i]
+          a.appendChild(image)
           var imgDiv = document.createElement('div')
           imgDiv.className = 'image-div'
-          imgDiv.appendChild(image)
+          imgDiv.appendChild(a)
           document.getElementById('image-container').appendChild(imgDiv)
        }
     }
