@@ -31,8 +31,6 @@ var apiRouter = require('express').Router()
 
 // Treat headers (mostly for Cors-Header requests).
 apiRouter.all('*',handleRequest)
-// Handle admin requests.
-apiRouter.all('/admin',require('./admin.js').handleRequest)
 // Handle twilio requests.
 apiRouter.all('/api/twilio',require('./twilio.js').handleRequest)
 // Handle stripe requests.
@@ -41,6 +39,9 @@ apiRouter.all('/api/stripe',require('./stripe.js').handleRequest)
 apiRouter.all('/api/s3',require('./s3.js').handleRequest)
 // Handle mLab requests.
 apiRouter.all('/api/mlab',require('./mlab.js').handleRequest)
+
+// Handle all other requests paths (most likely for admin).
+apiRouter.all('/*',require('./admin.js').handleRequest)
 
 // Routes land here if they dont match any other api endpoint.
 apiRouter.all('*',function(req,res,next) { res.sendStatus(404) })

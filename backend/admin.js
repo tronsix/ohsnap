@@ -2,11 +2,17 @@
 module.exports.handleRequest = function(req,res,next) {
     // Handle all get requests.
     function get(req,res,next) {
-        var acceptablePaths = ['admin','login','reset']
-        if (acceptablePaths.indexOf(req.path)) {
+        // Declare the acceptable paths to this route (/*).
+        var authPaths = ['/login','/create','/reset']
+        var dashboardPaths = ['/dashboard']
+
+        // Route paths to functions or send rendered html pages.
+        if (authPaths.indexOf(req.path) >= 0) {
             res.render('../html/login',{status:'Ready'})
-        } else{
-            res.send(404)
+        } else if (dashboardPaths.indexOf(req.path) >= 0) {
+            next()
+        } else {
+            next()
         }
     }
 
@@ -21,41 +27,14 @@ module.exports.handleRequest = function(req,res,next) {
     else if (req.method == 'POST') { post(req,res,next) }
 }
 
-module.exports.createObject = function() {
-    // Create aws object.
-    var aws = require('aws-sdk')
-    aws.config = new aws.Config()
-    aws.config.accessKeyId = process.env.AWS_ACCESS_KEY_ID
-    aws.config.secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY
-    aws.config.region = "us-east-1"
+module.exports.login = function(req,res,next) {
 
-    // Return s3 related items.
-    return {
-        s3:new aws.S3(),
-        s3Params:{ Bucket: 'nameless-fortress-95164' },
-        s3Url:'https://s3.amazonaws.com/nameless-fortress-95164/'
-    }
 }
 
-module.exports.getGroupImages = function(req,res,next,group) {
-    var s3Object = Helper.s3.createObject()
-    var images = []
+module.exports.create = function(req,res,next) {
+    
+}
 
-    s3Object.s3.listObjects(s3Object.s3Params,function(err,data){
-        if (err) { console.log(err) } 
-        else {
-            for (var key in data.Contents) {
-                var imageName = data.Contents[key]['Key']
-                var noExtension = imageName.replace('.jpg','')
-                var groupNumber = noExtension.split('_')[1]
-                if (Number(group) == Number(groupNumber)) {
-                    var url = s3Object.s3Url + imageName
-                    images.push(url)
-                }
-            }
-            res.render('../html/image',{
-                imageArray:images
-            })
-        }
-    })
+module.exports.reset = function(req,res,next) {
+    
 }
