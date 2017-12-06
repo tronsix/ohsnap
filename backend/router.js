@@ -45,13 +45,20 @@ function getGroupImages(req,res,next,group) {
 
 function handleAllRequests(req,res,next) {
     // For Cors-Header requests
-    res.header("Access-Control-Allow-Origin", '*')
+    // Allows cross-origin requests from any origin host.
+    res.header("Access-Control-Allow-Origin", req.headers.host)
     res.header("Access-Control-Allow-Credentials", false)
-    res.header('Access-Control-Allow-Methods', 'GET,POST')
+    res.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
+    res.header('Access-Control-Allow-Headers', 'Content-Type')
     next()
 }
 
-function handleAllGetRequests(req,res) {
+function handleOptionsRequests(req,res,next) {
+    // For Cors-Header requests
+    res.sendStatus(200)
+}
+
+function handleGetRequests(req,res,next) {
     var url = req.originalUrl
     var group = url.replace('/','')
     if (url == '/photos') {
@@ -61,7 +68,7 @@ function handleAllGetRequests(req,res) {
     }
 }
 
-function handleAllPostRequests(req,res) {
+function handlePostRequests(req,res,next) {
     var url = req.originalUrl
     if (url == '/message') {
         var group = req.body['Body']
@@ -77,10 +84,12 @@ var MessagingResponse = require('twilio').twiml.MessagingResponse
 
 // Treat the headers here.
 apiRouter.all('*',handleAllRequests)
+// Treat the headers here.
+apiRouter.options('*',handleOptionsRequests)
 // Handle get requests.
-apiRouter.get('*',handleAllGetRequests)
+apiRouter.get('*',handleGetRequests)
 // Handle post requests.
-apiRouter.post('*',handleAllPostRequests)
+apiRouter.post('*',handlePostRequests)
 
 // Make the middleware available.
 module.exports = apiRouter;
