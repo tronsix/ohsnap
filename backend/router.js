@@ -23,11 +23,16 @@ function handleRequest(req,res,next) {
     }
 }
 
+
+
+
 // Declare variables.
 var apiRouter = require('express').Router()
 
 // Treat headers (mostly for Cors-Header requests).
 apiRouter.all('*',handleRequest)
+// Handle admin requests.
+apiRouter.all('/admin',require('./admin.js').handleRequest)
 // Handle twilio requests.
 apiRouter.all('/api/twilio',require('./twilio.js').handleRequest)
 // Handle stripe requests.
@@ -37,11 +42,8 @@ apiRouter.all('/api/s3',require('./s3.js').handleRequest)
 // Handle mLab requests.
 apiRouter.all('/api/mlab',require('./mlab.js').handleRequest)
 
+// Routes land here if they dont match any other api endpoint.
+apiRouter.all('*',function(req,res,next) { res.sendStatus(404) })
+
 // Make the middleware available.
 module.exports = apiRouter
-
-
-// Current endpoints
-// GET /
-// POST api/twilio/
-// GET /photos

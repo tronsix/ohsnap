@@ -2,7 +2,12 @@
 module.exports.handleRequest = function(req,res,next) {
     // Handle all get requests.
     function get(req,res,next) {
-        // Responsible for sending data to specified helper(s).
+        var acceptablePaths = ['admin','login','reset']
+        if (acceptablePaths.indexOf(req.path)) {
+            res.render('../html/login',{status:'Ready'})
+        } else{
+            res.send(404)
+        }
     }
 
     // Handle all post requests.

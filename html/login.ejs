@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <style>
+        input,button {
+            display: block;
+        }
+        button {
+            margin-bottom: 25px;
+        }
+        p {
+            font-size: 10px;
+        }
+    </style>
+
+    <p id="status"><%= status %></p>
+
+    <input id="loginEmail" type="email" placeholder="Email">
+    <input id="loginPassword" type="password" placeholder="Password">
+    <button id="login">Login</button>
+
+    <input id="createEmail" type="email" placeholder="Email">
+    <input id="createPassword" type="password" placeholder="Password">
+    <button id="create">Create Account</button>
+
+    <input id="resetEmail" type="email" placeholder="Email">
+    <button id="reset">Reset Password</button>
+
+    <script>
+        document.querySelector('#login').addEventListener('click',function(){
+            var email = document.querySelector('#loginEmail')
+            var password = document.querySelector('#loginPassword')
+        })
+        document.querySelector('#create').addEventListener('click',function(){
+            var email = document.querySelector('#createEmail')
+            var password = document.querySelector('#createPassword')
+        })
+        document.querySelector('#reset').addEventListener('click',function(){
+            var email = document.querySelector('#resetEmail')
+        })
+    </script>
+</body>
+</html>
