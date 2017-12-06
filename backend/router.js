@@ -1,106 +1,41 @@
-var Helper ={
-    request:{
-        all:function(req,res,next) {
-            // For Cors-Header requests
-            // Allows cross-origin requests from any origin host.
-            if (req.get('origin')) {
-                console.log('Origin: ' + req.get('origin'))
-                res.header("Access-Control-Allow-Origin", req.get('origin'))
-            } else {
-                console.log('Host: ' + req.get('host'))
-                res.header("Access-Control-Allow-Origin", req.get('host'))
-            }
-            res.header("Access-Control-Allow-Credentials", false)
-            res.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
-            res.header('Access-Control-Allow-Headers', 'Content-Type')
-            next()
-        },
-        options:function(req,res,next) {
-            // For Cors-Header requests.
-            res.sendStatus(200)
-        },
-        get:function(req,res,next) {
-            var url = req.originalUrl
-            var group = url.replace('/','')
-            if (url == '/photos') {
-                // Send all images 10 or 20 at a time
-                res.sendStatus(200)
-            } else {
-                getGroupImages(req,res,group)
-            }
-        },
-        post:function(req,res,next) {
-            var url = req.originalUrl
-            if (url == '/message') {
-                var group = req.body['Body']
-                sendGroupUrl(req,res,next,group)
-            }
-        }
-    },
-    s3:{
-        createObject:function() {
-            var aws = require('aws-sdk')
-            aws.config = new aws.Config()
-            aws.config.accessKeyId = process.env.AWS_ACCESS_KEY_ID
-            aws.config.secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY
-            aws.config.region = "us-east-1"
-            var s3 = new aws.S3()
-            var s3Params = { Bucket: 'nameless-fortress-95164' }
-            return [s3,s3Params]
-        }
-    },
-    twilio:{
-        createResponse:function() {
-            var twilio = require('twilio')
-            var MessagingResponse = twilio.twiml.MessagingResponse
-            return new MessagingResponse()
-        },
-        sendGroupUrl(req,res,next,group) {
-            var twiml = Helper.twilio.createResponse()
-            var url = req.get('host') + '/' + group
-            twiml.message(url)
-            res.writeHead(200, {'Content-Type': 'text/xml'})
-            res.end(twiml.toString())
-        },
-        getGroupImages(req,res,next,group) {
-            var s3array = Helper.s3.createObject()
-            var s3 = s3array[0]
-            var s3Params = s3array[1]
-            var images = []
+// Handles all requests.
+function handleRequest(req,res,next) {
+    // Sets the headers.
+    function setHeaders() {
+        // Allows cross-origin requests from any origin host.
+        var origin = req.get('origin') || req.get('host')
+        res.header("Access-Control-Allow-Origin", origin)
+        res.header("Access-Control-Allow-Credentials", false)
+        res.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
+        res.header('Access-Control-Allow-Headers', 'Content-Type')
 
-            s3.listObjects(s3Params,function(err,data){
-                if (err) { console.log(err) } 
-                else {
-                    for (var key in data.Contents) {
-                        var imageName = data.Contents[key]['Key']
-                        var noExtension = imageName.replace('.jpg','')
-                        var groupNumber = noExtension.split('_')[1]
-                        if (Number(group) == Number(groupNumber)) {
-                            var url = 'https://s3.amazonaws.com/nameless-fortress-95164/' + imageName
-                            images.push(url)
-                        }
-                    }
-                    res.render('../html/index',{
-                        imageArray:images
-                    })
-                }
-            })
-        }
+        // For Cors-Header preflight requests.
+        if (req.method == 'OPTIONS') { res.sendStatus(200) }
+        // Passes request to next middleware.
+        else { next() }
     }
-};
+
+    // Filters requests.
+    if (req.method == 'GET' || req.method == 'POST' || req.method == 'OPTIONS') {
+        setHeaders()
+    } else {
+        res.sendStatus(405)
+    }
+}
 
 // Declare variables.
-var express = require('express')
-var apiRouter = express.Router()
+var apiRouter = require('express').Router()
 
-// Treat the headers here.
-apiRouter.all('*',Helper.request.all)
-// Treat the headers here.
-apiRouter.options('*',Helper.request.options)
-// Handle get requests.
-apiRouter.get('*',Helper.request.get)
-// Handle post requests.
-apiRouter.post('*',Helper.request.post)
+// Treat headers (mostly for Cors-Header requests).
+apiRouter.all('*',handleRequest)
+// Handle twilio requests.
+apiRouter.all('/api/twilio',require('./twilio.js').handleRequest)
+// Handle stripe requests.
+apiRouter.all('/api/stripe',require('./stripe.js').handleRequest)
+// Handle s3 requests.
+apiRouter.all('/api/s3',require('./s3.js').handleRequest)
+// Handle mLab requests.
+apiRouter.all('/api/mlab',require('./mlab.js').handleRequest)
 
 // Make the middleware available.
-module.exports = apiRouter;
+module.exports = apiRouter

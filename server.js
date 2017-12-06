@@ -53,7 +53,7 @@ db.once('open',function(){
             mongooseConnection:db
         })
     }))
-    // Pass all routes to the apiRouter.
+    // Pass all requests to the apiRouter.
     app.all('*',apiRouter)
     // Open the connection.
     app.listen(port,function(){
