@@ -63,6 +63,7 @@ function handleGetRequests(req,res,next) {
     var group = url.replace('/','')
     if (url == '/photos') {
         // Send all images 10 or 20 at a time
+        res.sendStatus(200)
     } else {
         getGroupImages(req,res,group)
     }
