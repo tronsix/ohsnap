@@ -47,7 +47,14 @@ function handleAllRequests(req,res,next) {
     // For Cors-Header requests
     // Allows cross-origin requests from any origin host.
     console.log(req.get('origin'))
-    res.header("Access-Control-Allow-Origin", req.headers.host)
+    console.log(req.get('host'))
+    if (req.get('origin')) {
+        console.log(1)
+        res.header("Access-Control-Allow-Origin", req.get('origin'))
+    } else {
+        console.log(2)
+        res.header("Access-Control-Allow-Origin", req.headers.host)
+    }
     res.header("Access-Control-Allow-Credentials", false)
     res.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
     res.header('Access-Control-Allow-Headers', 'Content-Type')
