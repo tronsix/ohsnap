@@ -39,3 +39,9 @@ apiRouter.all('/api/mlab',require('./mlab.js').handleRequest)
 
 // Make the middleware available.
 module.exports = apiRouter
+
+
+// Current endpoints
+// GET /
+// POST api/twilio/
+// GET /photos

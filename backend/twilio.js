@@ -8,6 +8,7 @@ module.exports.handleRequest = function(req,res,next) {
     // Handle all post requests.
     function post(req,res,next) {
         // Responsible for sending data to specified helper(s).
+        module.exports.sendGroupUrl(req,res,next)
     }
 
     // Calls handleGet method.
@@ -23,9 +24,8 @@ module.exports.createResponse = function() {
 }
 
 module.exports.sendGroupUrl = function(req,res,next,group) {
-    var twiml = Helper.twilio.createResponse()
-    var url = req.get('host') + '/' + group
-    twiml.message(url)
+    var twiml = module.exports.createResponse()
+    twiml.message('Thanks for reaching out')
     res.writeHead(200, {'Content-Type': 'text/xml'})
     res.end(twiml.toString())
 }
