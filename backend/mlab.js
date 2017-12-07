@@ -1,4 +1,4 @@
-var User = require('../auth/user')
+var User = require('../schema/userModel')
 
 module.exports.create = function(req,res,next) {
     var email = req.body.email

@@ -1,4 +1,4 @@
-var User = require("../auth/user.js")
+var User = require('../schema/userModel')
 var strategy = require('passport-local').Strategy
 
 module.exports = function(passport) {

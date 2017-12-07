@@ -55,7 +55,7 @@ mongoose.connection.once('open',function(){
     app.use(flash())
 
     // Initialize local strategy.
-    require('./auth/local')(passport)
+    require('./passport/localStrategy')(passport)
 
     // Initializing Passport and sessions.
     app.use(passport.initialize())

@@ -21,12 +21,14 @@ module.exports.post = {
     login(req,res,next) {
         var passport = require('passport')
         passport.authenticate('local', function(err, user, info) {
-            if (err) { return next(err); }
-            if (!user) { return res.redirect('/login'); }
+            console.log(err)
+            console.log(user)
+            console.log(info)
+            if (err) { return res.sendStatus(401) }
+            if (!user) { return res.sendStatus(401) }
             req.logIn(user, function(err) {
-                if (err) { return next(err); }
                 return res.sendStatus(200)
-            });
+            })
         })(req, res, next)
     }
 }
