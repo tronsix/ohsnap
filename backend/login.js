@@ -1,9 +1,11 @@
 module.exports.getLogin = function(req,res,next) {
     req.logOut()
     var url;
-    console.log('secure: ' + req.secure)
-    if (req.secure) { url = 'https://' + req.headers.host }
-    else { url = 'http://' + req.headers.host }
+    if (req.headers.host.includes('nameless-fortress-95164')) {
+        url = 'https://' + req.headers.host
+    } else {
+        url = 'http://' + req.headers.host
+    }
     console.log('url: ' + url)
     res.render('../html/login',{
         status:'Ready',
@@ -74,8 +76,11 @@ module.exports.postReset = function(req,res,next) {
 		function(user,token,done) {
 
             var url;
-            if (req.secure) { url = 'https://' + req.headers.host }
-            else { url = 'http://' + req.headers.host }
+            if (req.headers.host.includes('nameless-fortress-95164')) {
+                url = 'https://' + req.headers.host
+            } else {
+                url = 'http://' + req.headers.host
+            }
 
             var content = 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
             'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
