@@ -29,8 +29,8 @@ module.exports.getDashboard = function(req,res,next) {
         if (err) { console.log(err);return res.sendStatus(result) }
         res.render('../html/dashboard',{
             status:'Ready',
-            events:data[0],
-            phones:data[1]
+            events:result[0],
+            phones:result[1]
         })
     })
 
