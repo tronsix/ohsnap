@@ -26,8 +26,6 @@ function handleRequest(req,res,next) {
 // Declare variables.
 var passport = require('passport')
 var apiRouter = require('express').Router()
-var adminjs = require('./admin')
-var mlabljs = require('./mlab')
 
 // Treat headers (mostly for Cors-Header requests).
 apiRouter.all('*',handleRequest)
@@ -37,30 +35,16 @@ apiRouter.all('/api/twilio',require('./twilio.js').handleRequest)
 apiRouter.all('/api/stripe',require('./stripe.js').handleRequest)
 // Handle s3 requests.
 apiRouter.all('/api/s3',require('./s3.js').handleRequest)
-// Handle mLab requests.
-// apiRouter.all('/api/mlab/:method',require('./mlab.js').handleRequest)
 
 // Admin pages.
-apiRouter.get('/login',adminjs.get.login)
-apiRouter.get('/admin',adminjs.get.admin)
-apiRouter.get('/dashboard',adminjs.get.dashboard)
-apiRouter.post('/create',mlabljs.create)
-apiRouter.post('/login',adminjs.post.login)
+var loginPage = require('./login')
+apiRouter.get('/login',loginPage.getLogin)
+apiRouter.get('/dashboard',loginPage.getDashboard)
+apiRouter.post('/login',loginPage.postLogin)
+apiRouter.post('/create',loginPage.postCreate)
 
 // Routes land here if they dont match any other api endpoint.
-apiRouter.all('*',function(req,res,next) {
-    if (req.method == 'GET' && req.path == '/') {
-        var url;
-        if (req.secure) { url = 'https://' + req.headers.host }
-        else { url = 'http://' + req.headers.host }
-        res.render('../html/login',{
-            status:'Status' || req.flash(),
-            rootUrl:url
-        })
-    } else {
-        res.sendStatus(404)
-    }
-})
+apiRouter.all('*',function(req,res,next) { res.sendStatus(404) })
 
 // Make the middleware available.
 module.exports = apiRouter

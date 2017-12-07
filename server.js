@@ -14,10 +14,8 @@ var app = express()
 var passport = require('passport')
 var mongoose = require('mongoose')
 
-// var cookieSession = require('cookie-session')
 var session = require('express-session')
 var MongoStore = require('connect-mongo')(session)
-var flash = require('connect-flash')
 
 // Add the promise to mongoose.
 mongoose.Promise = global.Promise
@@ -35,6 +33,7 @@ mongoose.connection.once('open',function(){
     app.use(express.static('./public'))
     // If you set cookie.secure in session to true
     // you have to use https OR use this cookieSession
+    // var cookieSession = require('cookie-session')
     // app.use(cookieSession({
 	// 	keys: [process.env.COOKIE_SECRET_OR_KEY]
 	// }))
@@ -51,8 +50,6 @@ mongoose.connection.once('open',function(){
         cookie:{ secure:false },
         store:new MongoStore({ mongooseConnection:mongoose.connection })
     }))
-    // For flash messages.
-    app.use(flash())
 
     // Initialize local strategy.
     require('./passport/localStrategy')(passport)

@@ -28,13 +28,13 @@ module.exports = function(passport) {
 		}
 	))
 
+	// Happens when the user creates an account.
 	passport.serializeUser(function(user, done) {
-		console.log('user: ' + user)
 	  	done(null, user.id)
 	})
 
+	// Happens when the user is already logged in.
 	passport.deserializeUser(function(id, done) {
-		console.log('deserialize: ' + id)
 		User.findById(id, function(err, user) {
 			done(err, user)
 		})
