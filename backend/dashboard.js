@@ -22,20 +22,16 @@ module.exports.getDashboard = function(req,res,next) {
         })
     }
 
-    function render(data) {
-        res.render('../html/dashboard',{
-            status:'Ready',
-            events:data[0],
-            phones:data[1]
-        })
-    }
-
     async.waterfall([
         getEvents,
         getPhones
     ], function(err, result){
         if (err) { console.log(err);return res.sendStatus(result) }
-        render(result)
+        res.render('../html/dashboard',{
+            status:'Ready',
+            events:data[0],
+            phones:data[1]
+        })
     })
 
 }
@@ -49,27 +45,12 @@ module.exports.createEvent = function(req,res,next) {
         })
         newEvent.save(function(err){
             if (err) done(err,500)
-            done(null,newEvent._id)
-        })
-    }
-
-    function updateUserEvents(id,done) {
-        User.findOne({email:req.user.email},function(err,user) {
-            if (err) done(err,500)
-            if (!user) done(true,401)
-            user.events.push({
-                eventid:id
-            })
-            user.save(function(err) {
-                if (err) done(err,500)
-                done(null,200)
-            })
+            done(null,200)
         })
     }
 
     async.waterfall([
-        createEvent,
-        updateUserEvents
+        createEvent
     ], function (err, result) {
         if (err) { console.log(err);return res.sendStatus(result) }
         res.sendStatus(result)

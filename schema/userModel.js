@@ -6,9 +6,7 @@ var userSchema = new mongoose.Schema({
     email: { type: String, required: true, index: { unique: true } },
     password: { type: String, required: true },
     resetPasswordToken:{ type:String, required:false },
-    resetPasswordExpires:{ type:Date, required:false },
-    events:[{ eventid:String }],
-    phones:[{ phoneid:String }]
+    resetPasswordExpires:{ type:Date, required:false }
 },{ timestamps: true })
 
 userSchema.methods.comparePassword = function(candidatePassword, callback) {
