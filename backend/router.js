@@ -38,7 +38,7 @@ apiRouter.all('/api/stripe',require('./stripe.js').handleRequest)
 // Handle s3 requests.
 apiRouter.all('/api/s3',require('./s3.js').handleRequest)
 // Handle mLab requests.
-apiRouter.all('/api/mlab',require('./mlab.js').handleRequest)
+apiRouter.all('/api/mlab/:method',require('./mlab.js').handleRequest)
 
 // Handle all other requests paths (most likely for admin).
 apiRouter.all('/*',require('./admin.js').handleRequest)

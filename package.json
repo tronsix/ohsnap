@@ -11,6 +11,7 @@
   "dependencies": {
     "async": "^2.6.0",
     "aws-sdk": "^2.162.0",
+    "bcrypt": "^1.0.3",
     "body-parser": "^1.18.2",
     "connect-mongo": "^2.0.0",
     "dotenv": "^4.0.0",
