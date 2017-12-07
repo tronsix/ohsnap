@@ -1,8 +1,10 @@
 module.exports.getLogin = function(req,res,next) {
     req.logOut()
     var url;
+    console.log('secure: ' + req.secure)
     if (req.secure) { url = 'https://' + req.headers.host }
     else { url = 'http://' + req.headers.host }
+    console.log('url: ' + url)
     res.render('../html/login',{
         status:'Ready',
         rootUrl:url
