@@ -59,7 +59,7 @@ mongoose.connection.once('open',function(){
     app.use(passport.session())
 
     // Pass all requests to the apiRouter.
-    app.all('*',require('./backend/router'))
+    app.all('*',require('./router'))
     // Open the connection.
     app.listen(port,function(){
         console.log('Connected to app')
