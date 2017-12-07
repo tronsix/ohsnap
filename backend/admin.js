@@ -1,40 +1,32 @@
-// Handle requests.
-module.exports.handleRequest = function(req,res,next) {
-    // Handle all get requests.
-    function get(req,res,next) {
-        // Declare the acceptable paths to this route (/*).
-        var authPaths = ['/login','/create','/reset']
-        var dashboardPaths = ['/dashboard']
-
-        // Route paths to functions or send rendered html pages.
-        if (authPaths.indexOf(req.path) >= 0) {
-            res.render('../html/login',{status:'Ready'})
-        } else if (dashboardPaths.indexOf(req.path) >= 0) {
-            next()
-        } else {
-            next()
-        }
+module.exports.get = {
+    login(req,res,next) {
+        var url;
+        if (req.secure) { url = 'https://' + req.headers.host }
+        else { url = 'http://' + req.headers.host }
+        res.render('../html/login',{
+            status:'Status',
+            rootUrl:url
+        })
+    },
+    admin(req,res,next) {
+        res.render('../html/admin')
+    },
+    dashboard(req,res,next) {
+        console.log(req.user)
+        res.render('../html/dashboard')
     }
+}
 
-    // Handle all post requests.
-    function post(req,res,next) {
-        // Responsible for sending data to specified helper(s).
+module.exports.post = {
+    login(req,res,next) {
+        var passport = require('passport')
+        passport.authenticate('local', function(err, user, info) {
+            if (err) { return next(err); }
+            if (!user) { return res.redirect('/login'); }
+            req.logIn(user, function(err) {
+                if (err) { return next(err); }
+                return res.sendStatus(200)
+            });
+        })(req, res, next)
     }
-
-    // Calls handleGet method.
-    if (req.method == 'GET') { get(req,res,next) } 
-    // Calls handlePost method.
-    else if (req.method == 'POST') { post(req,res,next) }
-}
-
-module.exports.login = function(req,res,next) {
-
-}
-
-module.exports.create = function(req,res,next) {
-    
-}
-
-module.exports.reset = function(req,res,next) {
-    
 }

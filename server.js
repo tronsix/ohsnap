@@ -14,8 +14,10 @@ var app = express()
 var passport = require('passport')
 var mongoose = require('mongoose')
 
+// var cookieSession = require('cookie-session')
 var session = require('express-session')
 var MongoStore = require('connect-mongo')(session)
+var flash = require('connect-flash')
 
 // Add the promise to mongoose.
 mongoose.Promise = global.Promise
@@ -31,6 +33,11 @@ mongoose.connection.once('open',function(){
 
     // For serving data/documents.
     app.use(express.static('./public'))
+    // If you set cookie.secure in session to true
+    // you have to use https OR use this cookieSession
+    // app.use(cookieSession({
+	// 	keys: [process.env.COOKIE_SECRET_OR_KEY]
+	// }))
     // Parse json requests to the request body.
     app.use(bodyParser.json())
     // Parse url requests to the request body.
@@ -41,17 +48,21 @@ mongoose.connection.once('open',function(){
         secret:process.env.COOKIE_SECRET_OR_KEY,
         saveUninitialized:false,
         resave:false,
-        cookie:{ secure:true },
+        cookie:{ secure:false },
         store:new MongoStore({ mongooseConnection:mongoose.connection })
     }))
+    // For flash messages.
+    app.use(flash())
+
+    // Initialize local strategy.
+    require('./auth/local')(passport)
 
     // Initializing Passport and sessions.
     app.use(passport.initialize())
     app.use(passport.session())
 
-
     // Pass all requests to the apiRouter.
-    app.all('*',require('./backend/router.js'))
+    app.all('*',require('./backend/router'))
     // Open the connection.
     app.listen(port,function(){
         console.log('Connected to app')

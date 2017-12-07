@@ -32,15 +32,64 @@
 
     <script>
         document.querySelector('#login').addEventListener('click',function(){
-            var email = document.querySelector('#loginEmail')
-            var password = document.querySelector('#loginPassword')
+            var email = document.querySelector('#loginEmail').value
+            var password = document.querySelector('#loginPassword').value
+
+            // Create the request.
+            var xhr = new XMLHttpRequest()
+            xhr.open("POST", "<%= rootUrl %>/login")
+            xhr.setRequestHeader("Content-Type", "application/json")
+            xhr.withCredentials = true
+            xhr.onreadystatechange = function() {
+                if (this.readyState == 4) {
+                    if (this.status == 200) {
+                        window.location.assign('/dashboard')
+                    } else {
+                        document.getElementById('status').innerText = 'Error logging in'
+                    }
+                }
+            }
+            // Send the request.
+            xhr.send(JSON.stringify({
+                email:email,
+                password:password
+            }))
+            
         })
         document.querySelector('#create').addEventListener('click',function(){
-            var email = document.querySelector('#createEmail')
-            var password = document.querySelector('#createPassword')
+            var email = document.querySelector('#createEmail').value
+            var password = document.querySelector('#createPassword').value
+
+            // Create the request.
+            var xhr = new XMLHttpRequest()
+            xhr.open("POST", "<%= rootUrl %>/create")
+            xhr.setRequestHeader("Content-Type", "application/json")
+            xhr.onreadystatechange = function() {
+                if (this.readyState == 4) {
+                    if (this.status == 200) {
+                        window.location.assign('/dashboard')
+                    } else {
+                        document.getElementById('status').innerText = 'Error creating account'
+                    }
+                }
+            }
+            // Send the request.
+            xhr.send(JSON.stringify({
+                email:email,
+                password:password
+            }))
         })
         document.querySelector('#reset').addEventListener('click',function(){
-            var email = document.querySelector('#resetEmail')
+            var email = document.querySelector('#resetEmail').value
+
+            // Create the request.
+            var xhr = new XMLHttpRequest()
+            xhr.open("POST", "<%= rootUrl %>/reset")
+            xhr.setRequestHeader("Content-Type", "application/json")
+            // Send the request.
+            xhr.send(JSON.stringify({
+                email:email
+            }))
         })
     </script>
 </body>
