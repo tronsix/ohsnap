@@ -42,7 +42,7 @@
 
             // Create the request.
             var xhr = new XMLHttpRequest()
-            xhr.open("POST", "<%= rootUrl %>/login")
+            xhr.open("POST", "<%= global.rootUrl %>/login")
             xhr.setRequestHeader("Content-Type", "application/json")
             xhr.onreadystatechange = function() {
                 if (this.readyState == 4) {
@@ -68,7 +68,7 @@
 
             // Create the request.
             var xhr = new XMLHttpRequest()
-            xhr.open("POST", "<%= rootUrl %>/create")
+            xhr.open("POST", "<%= global.rootUrl %>/create")
             xhr.setRequestHeader("Content-Type", "application/json")
             xhr.onreadystatechange = function() {
                 if (this.readyState == 4) {
@@ -92,7 +92,7 @@
 
             // Create the request.
             var xhr = new XMLHttpRequest()
-            xhr.open("POST", "<%= rootUrl %>/reset")
+            xhr.open("POST", "<%= global.rootUrl %>/reset")
             xhr.setRequestHeader("Content-Type", "application/json")
             xhr.onreadystatechange = function() {
                 if (this.readyState == 4) {
@@ -126,7 +126,7 @@
 
             // Create the request.
             var xhr = new XMLHttpRequest()
-            xhr.open("POST", "<%= rootUrl %>/update")
+            xhr.open("POST", "<%= global.rootUrl %>/update")
             xhr.setRequestHeader("Content-Type", "application/json")
             xhr.onreadystatechange = function() {
                 if (this.readyState == 4) {

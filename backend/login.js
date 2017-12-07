@@ -1,21 +1,9 @@
 module.exports.getLogin = function(req,res,next) {
     req.logOut()
-    var url;
-    if (req.headers.host.includes(process.env.APP_NAME)) {
-        url = 'https://' + req.headers.host
-    } else {
-        url = 'http://' + req.headers.host
-    }
 
     res.render('../html/login',{
-        status:'Ready',
-        rootUrl:url
+        status:'Ready'
     })
-}
-
-module.exports.getDashboard = function(req,res,next) {
-    if (req.user) { res.render('../html/dashboard') }
-    else { res.sendStatus(401) }
 }
 
 module.exports.postLogin = function(req,res,next) {
@@ -75,16 +63,9 @@ module.exports.postReset = function(req,res,next) {
 		},
 		function(user,token,done) {
 
-            var url;
-            if (req.headers.host.includes(process.env.APP_NAME)) {
-                url = 'https://' + req.headers.host
-            } else {
-                url = 'http://' + req.headers.host
-            }
-
             var content = 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
             'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-            url + '/login?token=' + token + '\n\n' +
+            global.rootUrl + '/login?token=' + token + '\n\n' +
             'If you did not request this, please ignore this email and your password will remain unchanged.\n'
 
             var nodemailer = require('nodemailer')

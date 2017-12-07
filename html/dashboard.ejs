@@ -17,23 +17,56 @@
         color:#1154cc;
         font-size: 12px;
     }
+    #status {
+        font-size:10px;
+    }
 </style>
 </head>
 <body>
 
+    <p id="status"><%= status %></p>
+    <br>
+    <br>
+    <br>
+
+
     <p>Events</p>
     <br>
-    <input type="text" placeholder="Event Name">
-    <button>Create Event</button>
+    <input id="eventName" type="text" placeholder="Event Name">
+    <button id="createEvent">Create Event</button>
     <br>
-    <p>Event 1</p>
-    <p>512-512-1231</p>
-    <br>
-    <p>Event 2</p>
-    <p>512-512-1231</p>
-    <br>
-    <p>Event 3</p>
-    <p>512-512-1231</p>
+
+    <script>
+        document.getElementById('createEvent').addEventListener('click', function() {
+            var eventName = document.getElementById('eventName').value
+
+            if (eventName.length < 1) return
+
+            // Create the request.
+            var xhr = new XMLHttpRequest()
+            xhr.open("POST", "<%= global.rootUrl %>/createEvent")
+            xhr.setRequestHeader("Content-Type", "application/json")
+            xhr.onreadystatechange = function() {
+                if (this.readyState == 4) {
+                    if (this.status == 200) {
+                        window.location.reload()
+                    } else {
+                        document.getElementById('status').innerText = 'Error creating event.'
+                    }
+                }
+            }
+            // Send the request.
+            xhr.send(JSON.stringify({
+                eventName:eventName
+            }))
+        })
+    </script>
+
+    <% for(var i=0; i<events.length; i++) {%>
+        <p><%= events[i].name %></p>
+        <p><%= events[i].phone %></p>
+        <br>
+    <% } %>
 
     <br>
     <br>
@@ -44,11 +77,11 @@
     <input type="text" placeholder="Area Code">
     <button>Buy A Number</button>
     <br>
-    <p>512-512-1231</p>
-    <br>
-    <p>512-512-1231</p>
-    <br>
-    <p>512-512-1231</p>
+
+    <% for(var i=0; i<phones.length; i++) {%>
+        <p><%= phones[i].phone %></p>
+        <br>
+    <% } %>
     
     <br>
     <br>

@@ -1,3 +1,151 @@
+var async = require('async')
+var UserEvent = require('../schema/dataModel').event
+var Phone = require('../schema/dataModel').phone
+var User = require('../schema/userModel')
+
+module.exports.getDashboard = function(req,res,next) {
+    if (!req.user) res.sendStatus(401)
+
+    function getEvents(done) {
+        UserEvent.find({owner:req.user.email},function(err,eventData) {
+            if (err) done(err,500)
+            if (!eventData) done(true,401)
+            done(null,eventData)
+        })
+    }
+
+    function getPhones(eventData,done) {
+        Phone.find({owner:req.user.email},function(err,phoneData) {
+            if (err) done(err,500)
+            if (!phoneData) done(true,401)
+            done(null,[eventData,phoneData])
+        })
+    }
+
+    function render(data) {
+        res.render('../html/dashboard',{
+            status:'Ready',
+            events:data[0],
+            phones:data[1]
+        })
+    }
+
+    async.waterfall([
+        getEvents,
+        getPhones
+    ], function(err, result){
+        if (err) { console.log(err);return res.sendStatus(result) }
+        render(result)
+    })
+
+}
+
+module.exports.createEvent = function(req,res,next) {
+
+    function createEvent(done) {
+        var newEvent = new UserEvent({
+            owner:req.user.email,
+            name:req.body.eventName
+        })
+        newEvent.save(function(err){
+            if (err) done(err,500)
+            done(null,newEvent._id)
+        })
+    }
+
+    function updateUserEvents(id,done) {
+        User.findOne({email:req.user.email},function(err,user) {
+            if (err) done(err,500)
+            if (!user) done(true,401)
+            user.events.push({
+                eventid:id
+            })
+            user.save(function(err) {
+                if (err) done(err,500)
+                done(null,200)
+            })
+        })
+    }
+
+    async.waterfall([
+        createEvent,
+        updateUserEvents
+    ], function (err, result) {
+        if (err) { console.log(err);return res.sendStatus(result) }
+        res.sendStatus(result)
+    })
+
+}
+
+module.exports.buyPhone = function(req,res,next) {
+    
+    
+    req.body.areaCode
+
+    var newPhone = new Phone({
+
+    })
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 module.exports.createObject = function() {
     // Create aws object.
     var aws = require('aws-sdk')
