@@ -6,7 +6,7 @@ module.exports.getLogin = function(req,res,next) {
     } else {
         url = 'http://' + req.headers.host
     }
-    console.log('url: ' + url)
+
     res.render('../html/login',{
         status:'Ready',
         rootUrl:url
