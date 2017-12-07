@@ -1,7 +1,7 @@
 module.exports.getLogin = function(req,res,next) {
     req.logOut()
     var url;
-    if (req.headers.host.includes('nameless-fortress-95164')) {
+    if (req.headers.host.includes(process.env.APP_NAME)) {
         url = 'https://' + req.headers.host
     } else {
         url = 'http://' + req.headers.host
@@ -76,7 +76,7 @@ module.exports.postReset = function(req,res,next) {
 		function(user,token,done) {
 
             var url;
-            if (req.headers.host.includes('nameless-fortress-95164')) {
+            if (req.headers.host.includes(process.env.APP_NAME)) {
                 url = 'https://' + req.headers.host
             } else {
                 url = 'http://' + req.headers.host
