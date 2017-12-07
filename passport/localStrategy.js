@@ -2,27 +2,17 @@ var User = require('../schema/userModel')
 var strategy = require('passport-local').Strategy
 
 module.exports = function(passport) {
-
+	
+	// Passes err,user,info back to passport.authenticate('local')
 	passport.use(new strategy({usernameField: 'email'},
 		function(email, password, done) {
 			User.findOne({ email: email }, function(err, user) {
-				console.log(1)
 				if (err) return done(err)
-				console.log(2)
 				if (!user) return done(null, false)
-				console.log(3)
 				user.comparePassword(password, function(err, isMatch) {
-					if (isMatch) {
-						console.log(4)
-						// req.logIn(user, function(err) {
-						// 	console.log(5)
-							
-						// })
-						return done(null, user)
-					} else {
-						console.log(6)
-						return done(null, false)
-					}
+					if (err) return done(err)
+					if (!isMatch) return done(null, false)
+					return done(null, user)
 				})
 			})
 		}
