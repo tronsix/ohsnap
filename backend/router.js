@@ -29,12 +29,6 @@ var apiRouter = require('express').Router()
 
 // Treat headers (mostly for Cors-Header requests).
 apiRouter.all('*',handleRequest)
-// Handle twilio requests.
-apiRouter.all('/api/twilio',require('./twilio.js').handleRequest)
-// Handle stripe requests.
-apiRouter.all('/api/stripe',require('./stripe.js').handleRequest)
-// Handle s3 requests.
-apiRouter.all('/api/s3',require('./s3.js').handleRequest)
 
 // Admin pages.
 var loginPage = require('./login')
