@@ -23,9 +23,9 @@
     <input id="loginPassword" type="password" placeholder="Password">
     <button id="login">Login</button>
 
-    <input id="createEmail" type="email" placeholder="Email">
+    <!-- <input id="createEmail" type="email" placeholder="Email">
     <input id="createPassword" type="password" placeholder="Password">
-    <button id="create">Create Account</button>
+    <button id="create">Create Account</button> -->
 
     <input id="resetEmail" type="email" placeholder="Email">
     <button id="reset">Reset Password</button>
@@ -60,31 +60,31 @@
             }))
             
         })
-        document.querySelector('#create').addEventListener('click',function(){
-            var email = document.querySelector('#createEmail').value
-            var password = document.querySelector('#createPassword').value
+        // document.querySelector('#create').addEventListener('click',function(){
+        //     var email = document.querySelector('#createEmail').value
+        //     var password = document.querySelector('#createPassword').value
 
-            if (email.length < 1 || password.length < 1) return
+        //     if (email.length < 1 || password.length < 1) return
 
-            // Create the request.
-            var xhr = new XMLHttpRequest()
-            xhr.open("POST", "<%= rootUrl %>/create")
-            xhr.setRequestHeader("Content-Type", "application/json")
-            xhr.onreadystatechange = function() {
-                if (this.readyState == 4) {
-                    if (this.status == 200) {
-                        window.location.assign('/dashboard')
-                    } else {
-                        document.getElementById('status').innerText = 'Error creating account'
-                    }
-                }
-            }
-            // Send the request.
-            xhr.send(JSON.stringify({
-                email:email,
-                password:password
-            }))
-        })
+        //     // Create the request.
+        //     var xhr = new XMLHttpRequest()
+        //     xhr.open("POST", "<%= rootUrl %>/create")
+        //     xhr.setRequestHeader("Content-Type", "application/json")
+        //     xhr.onreadystatechange = function() {
+        //         if (this.readyState == 4) {
+        //             if (this.status == 200) {
+        //                 window.location.assign('/dashboard')
+        //             } else {
+        //                 document.getElementById('status').innerText = 'Error creating account'
+        //             }
+        //         }
+        //     }
+        //     // Send the request.
+        //     xhr.send(JSON.stringify({
+        //         email:email,
+        //         password:password
+        //     }))
+        // })
         document.querySelector('#reset').addEventListener('click',function(){
             var email = document.querySelector('#resetEmail').value
 
