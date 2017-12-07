@@ -36,6 +36,8 @@ apiRouter.get('/login',loginPage.getLogin)
 apiRouter.get('/dashboard',loginPage.getDashboard)
 apiRouter.post('/login',loginPage.postLogin)
 apiRouter.post('/create',loginPage.postCreate)
+apiRouter.post('/reset',loginPage.postReset)
+apiRouter.post('/update',loginPage.postUpdate)
 
 // Routes land here if they dont match any other api endpoint.
 apiRouter.all('*',function(req,res,next) { res.sendStatus(404) })
