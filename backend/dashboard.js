@@ -73,7 +73,6 @@ module.exports.purchaseNumber = function(req,res,next) {
             smsMethod: 'POST',
             smsUrl: global.rootUrl + '/twilio/message'
         }, function(err,number) {
-            console.log(number)
             var pNumber = number.phone_number || number.phoneNumber || number
             var phone = new Phone({
                 owner:req.user.email,
