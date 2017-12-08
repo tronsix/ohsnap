@@ -26,14 +26,19 @@
         <p>Purchase a number from the <a href="/dashboard">dashboard</a>.</p>
     </div>
 
+    <div class="tallBreak"></div>
+    
+    <a href="/dashboard">dashboard</a>
+
         <script>
 
-            var Dashboard = {
+            var UserEvent = {
                 rootUrl:'<%= global.rootUrl %>',
                 status:'<%= status %>',
                 id:'<%= eventDataId %>',
                 eventData:null,
                 phoneDataArray:null,
+                preparedPhonesArray:[],
                 objectIsEmpty:function(obj) {
                     if (typeof obj == 'undefined') return true
                     if (typeof obj == 'null') return true
@@ -50,7 +55,7 @@
                     }
 
                     var selectedPhoneIndex = getSelectedPhoneIndex()
-                    var postUrl = Dashboard.rootUrl + '/assignPhone'
+                    var postUrl = UserEvent.rootUrl + '/assignPhone'
                     var statusTitle = document.getElementById('status')
                     var xhr = new XMLHttpRequest
                     xhr.open("POST", postUrl)
@@ -67,13 +72,13 @@
                     }
                     // Send the request.
                     xhr.send(JSON.stringify({
-                        eventData:Dashboard.eventData,
-                        phoneData:Dashboard.phoneDataArray[selectedPhoneIndex]
+                        eventData:UserEvent.eventData,
+                        phoneData:UserEvent.preparedPhonesArray[selectedPhoneIndex]
                     }))
                 },
                 releaseAssignedPhone:function() {
 
-                    var postUrl = Dashboard.rootUrl + '/releasePhone'
+                    var postUrl = UserEvent.rootUrl + '/releasePhone'
                     var statusTitle = document.getElementById('status')
                     var xhr = new XMLHttpRequest
                     xhr.open("POST", postUrl)
@@ -90,12 +95,12 @@
                     }
                     // Send the request.
                     xhr.send(JSON.stringify({
-                        eventData:Dashboard.eventData,
-                        phoneData:Dashboard.eventData.phoneData
+                        eventData:UserEvent.eventData,
+                        phoneData:UserEvent.eventData.phoneData
                     }))
                 },
                 preparePage:function() {
-                    var eventName = Dashboard.eventData.event || Dashboard.eventData.name
+                    var eventName = UserEvent.eventData.event || UserEvent.eventData.name
                     var eventTitle = document.getElementById('eventName')
                     var statusTitle = document.getElementById('status')
                     var noPhoneDiv = document.getElementById('noPhoneDiv')
@@ -104,11 +109,11 @@
                     var availablePhone = document.getElementById('availablePhone')
                     var availablePhoneDiv = document.getElementById('availablePhoneDiv')
                     var assignAvailablePhone = document.getElementById('assignAvailablePhone')
-                    var assignedPhoneExists = !Dashboard.objectIsEmpty(Dashboard.eventData.phoneData)
+                    var assignedPhoneExists = !UserEvent.objectIsEmpty(UserEvent.eventData.phoneData)
 
                     function prepareAssignedPhone() {
-                        assignedPhone.innerText = Dashboard.eventData.phoneData.phone
-                        releaseAssignedPhone.addEventListener('click',Dashboard.releaseAssignedPhone)
+                        assignedPhone.innerText = UserEvent.eventData.phoneData.phone
+                        releaseAssignedPhone.addEventListener('click',UserEvent.releaseAssignedPhone)
                         assignedPhoneDiv.style.display = 'block'
                     }
 
@@ -117,46 +122,58 @@
                     }
 
                     function preparePhonesExist() {
-                        for (var i=0; i < Dashboard.phoneDataArray.length; i++) {
+
+                        for (var i = 0; i < UserEvent.phoneDataArray.length; i++) {
+                            var assignedToEvent = !UserEvent.objectIsEmpty(UserEvent.phoneDataArray[i].eventData)
+                            if (!assignedToEvent) { 
+                                UserEvent.preparedPhonesArray.push(UserEvent.phoneDataArray[i])
+                            }
+                        }
+
+                        for (var i = 0; i < UserEvent.preparedPhonesArray.length; i++) {
                             var option = document.createElement('option')
-                            option.value = Dashboard.phoneDataArray[i].phone
-                            option.innerText = Dashboard.phoneDataArray[i].phone
-                            option.id = Dashboard.phoneDataArray[i]._id
+                            option.value = UserEvent.preparedPhonesArray[i].phone
+                            option.innerText = UserEvent.preparedPhonesArray[i].phone
+                            option.id = UserEvent.preparedPhonesArray[i]._id
                             if (i == 0) {
                                 option.selected = true
                             }
                             availablePhone.appendChild(option)
                         }
-                        assignAvailablePhone.addEventListener('click',Dashboard.assignAvailablePhone)
-                        availablePhoneDiv.style.display = 'block'
+
+                        if (UserEvent.preparedPhonesArray.length == 0) {
+                            noPhoneDiv.style.display = 'block'
+                        } else {
+                            availablePhoneDiv.style.display = 'block'
+                        }
+
+                        assignAvailablePhone.addEventListener('click',UserEvent.assignAvailablePhone)
                     }
 
                     if (assignedPhoneExists) {
                         prepareAssignedPhone()
-                    } else if (Dashboard.phoneDataArray.length == 0) {
+                    } else if (UserEvent.phoneDataArray.length == 0) {
                         prepareNoPhonesExist()
-                    } else if (Dashboard.phoneDataArray.length > 0) {
+                    } else if (UserEvent.phoneDataArray.length > 0) {
                         preparePhonesExist()
                     }
 
                     // Event Name
                     eventTitle.innerText = 'Event: ' + eventName
-                    statusTitle.innerText = 'Status: ' + Dashboard.status
+                    statusTitle.innerText = 'Status: ' + UserEvent.status
                 },
                 initialize:function() {
-                    var getUrl = Dashboard.rootUrl + '/getEventData'
+                    var postUrl = UserEvent.rootUrl + '/getEventData'
                     var statusTitle = document.getElementById('status')
                     var xhr = new XMLHttpRequest
-                    xhr.open("POST", getUrl)
+                    xhr.open("POST", postUrl)
                     xhr.setRequestHeader("Content-Type", "application/json")
                     xhr.onreadystatechange = function() {
                         if (this.readyState == 4) {
                             if (this.status == 200) {
-                                Dashboard.eventData = JSON.parse(xhr.response).eventData
-                                Dashboard.phoneDataArray = JSON.parse(xhr.response).phoneDataArray
-                                Dashboard.preparePage()
-                                console.log(Dashboard.eventData)
-                                console.log(Dashboard.phoneDataArray)
+                                UserEvent.eventData = JSON.parse(xhr.response).eventData
+                                UserEvent.phoneDataArray = JSON.parse(xhr.response).phoneDataArray
+                                UserEvent.preparePage()
                             } else {
                                 statusTitle.innerText = 'Error getting data.'
                                 return
@@ -165,12 +182,12 @@
                     }
                     // Send the request.
                     xhr.send(JSON.stringify({
-                        eventDataId:Dashboard.id
+                        eventDataId:UserEvent.id
                     }))
                 }
             };
 
-            Dashboard.initialize()
+            UserEvent.initialize()
 
         </script>
 

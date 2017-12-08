@@ -52,6 +52,7 @@ apiRouter.post('/update',loginPage.postUpdate)
 // Dashboard routes.
 var dashboardPage = require('./backend/dashboard')
 apiRouter.get('/dashboard',dashboardPage.getDashboard)
+apiRouter.post('/getDashboardData',dashboardPage.getDashboardData)
 apiRouter.post('/createEvent',dashboardPage.createEvent)
 apiRouter.post('/purchaseNumber',dashboardPage.purchaseNumber)
 

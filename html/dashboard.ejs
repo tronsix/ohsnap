@@ -7,40 +7,125 @@
 </head>
 <body>
 
-    <p id="status"><%= status %></p>
+    <p id="status"></p>
 
-        <div class="smallBreak"></div>
+    <div class="tallBreak"></div>
 
-    <p>Events</p>
-    <br>
-    <input id="eventName" type="text" placeholder="Event Name">
-    <button id="createEvent">Create Event</button>
-    <br>
-    
-    <% for(var i=0; i<events.length; i++) {%>
-        <p><a href="<%= global.rootUrl + '/event/' + events[i]._id %>"><%= events[i].name %></a></p>
-        <p><%= events[i].phone %></p>
+    <div id="eventDiv" style="display:none;">
+        <p>Events</p>
         <br>
-    <% } %>
-
-        <div class="smallBreak"></div>
-
-    <p>Phone Numbers</p>
-    <br>
-    <input id="areaCode" type="text" placeholder="Area Code">
-    <button id="purchaseNumber">Buy A Number</button>
-    <br>
-
-    <% for(var i=0; i<phones.length; i++) {%>
-        <p><%= phones[i].phone %></p>
+        <input id="createEventName" type="text" placeholder="Event Name">
+        <button id="createEvent">Create Event</button>
         <br>
-    <% } %>
-    
-        <div class="tallBreak"></div>
+    </div>
+
+    <div class="smallBreak"></div>
+
+    <div id="phoneDiv" style="display:none;">
+        <p>Phone Numbers</p>
+        <br>
+        <input id="areaCode" type="text" placeholder="Area Code">
+        <button id="purchaseNumber">Buy A Number</button>
+        <br>
+    </div>
+
+    <div class="tallBreak"></div>
 
     <a href="/login">logout</a>
 
     <script>
+
+
+        var Dashboard = {
+            rootUrl:'<%= global.rootUrl %>',
+            status:'<%= status %>',
+            eventDataArray:null,
+            phoneDataArray:null,
+            objectIsEmpty:function(obj) {
+                if (typeof obj == 'undefined') return true
+                if (typeof obj == 'null') return true
+                for(var prop in obj) {
+                    if (obj.hasOwnProperty(prop)) return false
+                }
+                return JSON.stringify(obj) === JSON.stringify({})
+            },
+            preparePage:function() {
+
+                var eventDiv = document.getElementById('eventDiv')
+                var createEventNameInput = document.getElementById('createEventName')
+                var createEvent = document.getElementById('createEvent')
+                var phoneDiv = document.getElementById('phoneDiv')
+                var areaCodeInput = document.getElementById('areaCode')
+                var purchaseNumber = document.getElementById('purchaseNumber')
+
+                function prepareEvents() {
+
+                    for(var i = 0; i < Dashboard.eventDataArray.length; i++) {
+                        var assignedPhoneExists = !Dashboard.objectIsEmpty(Dashboard.eventDataArray[i].phoneData)
+                        var a = document.createElement('a')
+                        var p = document.createElement('p')
+                        var br = document.createElement('br')
+                        var eventName = Dashboard.eventDataArray[i].event || Dashboard.eventDataArray[i].name
+                        a.href = Dashboard.rootUrl + '/event/' + Dashboard.eventDataArray[i]._id
+                        a.innerText = eventName
+                        if (assignedPhoneExists) {
+                            p.innerText = Dashboard.eventDataArray[i].phoneData.phone
+                        } else {
+                            p.innerText = ''
+                        }
+                        eventDiv.appendChild(a)
+                        eventDiv.appendChild(p)
+                        eventDiv.appendChild(br)
+                    }
+
+                    eventDiv.style.display = 'block'
+                }
+
+                function preparePhones() {
+
+                    for(var i = 0; i < Dashboard.phoneDataArray.length; i++) {
+                        var p = document.createElement('p')
+                        var br = document.createElement('br')
+                        p.innerText = Dashboard.phoneDataArray[i].phone
+                        phoneDiv.appendChild(p)
+                        phoneDiv.appendChild(br)
+                    }
+
+                    phoneDiv.style.display = 'block'
+                }
+
+                var statusTitle = document.getElementById('status')
+                statusTitle.innerText = Dashboard.status
+                prepareEvents()
+                preparePhones()
+            },
+            initialize:function() {
+                var postUrl = Dashboard.rootUrl + '/getDashboardData'
+                var statusTitle = document.getElementById('status')
+                var xhr = new XMLHttpRequest
+                xhr.open("POST", postUrl)
+                xhr.setRequestHeader("Content-Type", "application/json")
+                xhr.onreadystatechange = function() {
+                    if (this.readyState == 4) {
+                        if (this.status == 200) {
+                            Dashboard.eventDataArray = JSON.parse(xhr.response).eventDataArray
+                            Dashboard.phoneDataArray = JSON.parse(xhr.response).phoneDataArray
+                            Dashboard.preparePage()
+                        } else {
+                            statusTitle.innerText = 'Error getting data.'
+                            return
+                        }
+                    }
+                }
+                // Send the request.
+                xhr.send(JSON.stringify({
+                    eventDataId:Dashboard.id
+                }))
+            }
+        }
+
+        Dashboard.initialize()
+
         document.getElementById('createEvent').addEventListener('click', function() {
             var eventName = document.getElementById('eventName').value
 
