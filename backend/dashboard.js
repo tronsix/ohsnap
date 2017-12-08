@@ -68,11 +68,12 @@ module.exports.purchaseNumber = function(req,res,next) {
         smsEnabled: true
     }).then(function(searchResults) {
         console.log(searchResults[0].phoneNumber)
+        console.log(global.rootUrl + '/twilio/message')
         if (searchResults.length === 0) res.sendStatus(401)
         twilio.incomingPhoneNumbers.create({
             phoneNumber: searchResults[0].phoneNumber,
-            SmsMethod: 'POST',
-            SmsUrl: global.rootUrl + '/twilio/message'
+            smsMethod: 'POST',
+            smsUrl: global.rootUrl + '/twilio/message'
         }, function(err,number) {
             console.log(number)
             var pNumber = number.phone_number || number.phoneNumber || number
