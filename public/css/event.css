@@ -1,0 +1,35 @@
+button {
+    margin-bottom: 10px;
+}
+p {
+    font-size: 12px;
+    display: inline-block;
+    margin:0;
+    padding:0;
+}
+a {
+    color:#1154cc;
+    font-size: 12px;
+}
+#status {
+    font-size:12px;
+    color:#009688;
+    margin-bottom:15px;
+}
+.smallBreak {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+.tallBreak {
+    display: block;
+    width: 100%;
+    height: 50px;
+}
+#eventDiv {
+    display: none;
+    margin-top: 25px;
+}
+div {
+    margin:25px 0 25px 0;
+}

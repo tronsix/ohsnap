@@ -3,123 +3,174 @@
 <head>
 <title></title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-    button {
-        margin-bottom: 10px;
-    }
-    p {
-        font-size: 12px;
-        display: inline-block;
-        margin:0;
-        padding:0;
-    }
-    a {
-        color:#1154cc;
-        font-size: 12px;
-    }
-    #status {
-        font-size:12px;
-        color:#009688;
-    }
-    .smallBreak {
-        display: block;
-        width: 100%;
-        height: auto;
-    }
-    .tallBreak {
-        display: block;
-        width: 100%;
-        height: 50px;
-    }
-    #eventDiv {
-        display: none;
-        margin-top: 25px;
-    }
-    div {
-        margin:25px 0 25px 0;
-    }
-</style>
+<link href="/css/event.css" rel="stylesheet">
 </head>
 <body>
 
-    <p id="status"><%= status %></p>
-    <div class="smallBreak"></div>
+    <p id="status"></p>
+    <br>
     <p id="eventName"></p>
 
     <div id="assignedPhoneDiv" style="display:none;">
         <p id="assignedPhone"></p>
-        <button id="releasePhone">Release Phone</button>
+        <button id="releaseAssignedPhone">Release Phone</button>
     </div>
 
     <div id="availablePhoneDiv" style="display:none;">
         <select id="availablePhone">
         </select>
-        <button id="assignPhone">Assign Phone</button>
+        <button id="assignAvailablePhone">Assign Phone</button>
     </div>
 
     <div id="noPhoneDiv" style="display:none;">
-        <p>Purchase a number from the dashboard.</p>
+        <p>Purchase a number from the <a href="/dashboard">dashboard</a>.</p>
     </div>
 
         <script>
 
-            function isEmpty(obj) {
-                if (typeof obj == 'undefined') return true
-                if (typeof obj == 'null') return true
-                for(var prop in obj) {
-                    if (obj.hasOwnProperty(prop)) return false
-                }
-                return JSON.stringify(obj) === JSON.stringify({})
-            }
+            var Dashboard = {
+                rootUrl:'<%= global.rootUrl %>',
+                status:'<%= status %>',
+                id:'<%= eventDataId %>',
+                eventData:null,
+                phoneDataArray:null,
+                objectIsEmpty:function(obj) {
+                    if (typeof obj == 'undefined') return true
+                    if (typeof obj == 'null') return true
+                    for(var prop in obj) {
+                        if (obj.hasOwnProperty(prop)) return false
+                    }
+                    return JSON.stringify(obj) === JSON.stringify({})
+                },
+                assignAvailablePhone:function() {
 
-            function preparePage() {
-                // Currently Assigned Phone
-                var assignedPhoneExists = !isEmpty(data.eventData.phoneData)
-                if (assignedPhoneExists) {
-                    document.getElementById('assignedPhone').innerText = data.eventData.phoneData.phone
-                    document.getElementById('assignedPhoneDiv').style.display = 'block'
-                } else if (data.phoneDataArray.length == 0) {
-                    document.getElementById('noPhoneDiv').style.display = 'block'
-                } else if (data.phoneDataArray.length > 0) {
-                    for (var i=0;i<data.phoneDataArray.length;i++) {
-                        var option = document.createElement('option')
-                        option.value = data.phoneDataArray[i].phone
-                        option.innerText = data.phoneDataArray[i].phone
-                        if (i == 0) {
-                            option.selected = true
+                    function getSelectedPhoneIndex() {
+                        var availablePhone = document.getElementById('availablePhone')
+                        return availablePhone.selectedIndex
+                    }
+
+                    var selectedPhoneIndex = getSelectedPhoneIndex()
+                    var postUrl = Dashboard.rootUrl + '/assignPhone'
+                    var statusTitle = document.getElementById('status')
+                    var xhr = new XMLHttpRequest
+                    xhr.open("POST", postUrl)
+                    xhr.setRequestHeader("Content-Type", "application/json")
+                    xhr.onreadystatechange = function() {
+                        if (this.readyState == 4) {
+                            if (this.status == 200) {
+                                window.location.reload()
+                            } else {
+                                statusTitle.innerText = 'Error assigning phone.'
+                                return
+                            }
                         }
-                        document.getElementById('availablePhone').appendChild(option)
                     }
-                    document.getElementById('availablePhoneDiv').style.display = 'block'
-                }
+                    // Send the request.
+                    xhr.send(JSON.stringify({
+                        eventData:Dashboard.eventData,
+                        phoneData:Dashboard.phoneDataArray[selectedPhoneIndex]
+                    }))
+                },
+                releaseAssignedPhone:function() {
 
-                // Event Name
-                var eventName = data.eventData.event || data.eventData.name
-                document.getElementById('eventName').innerText = 'Event: ' + eventName
-            }
-
-            var status = '<%= status %>'
-            var eventDataId = '<%= eventDataId %>'
-            var data;
-            var xhr = new XMLHttpRequest()
-
-            xhr.open("POST", "<%= global.rootUrl %>/getEventData")
-            xhr.setRequestHeader("Content-Type", "application/json")
-            xhr.onreadystatechange = function() {
-                if (this.readyState == 4) {
-                    if (this.status == 200) {
-                        data = JSON.parse(xhr.response)
-                        preparePage()
-                    } else {
-                        document.getElementById('status').innerText = 'Error getting data.'
-                        return
+                    var postUrl = Dashboard.rootUrl + '/releasePhone'
+                    var statusTitle = document.getElementById('status')
+                    var xhr = new XMLHttpRequest
+                    xhr.open("POST", postUrl)
+                    xhr.setRequestHeader("Content-Type", "application/json")
+                    xhr.onreadystatechange = function() {
+                        if (this.readyState == 4) {
+                            if (this.status == 200) {
+                                window.location.reload()
+                            } else {
+                                statusTitle.innerText = 'Error releasing phone.'
+                                return
+                            }
+                        }
                     }
+                    // Send the request.
+                    xhr.send(JSON.stringify({
+                        eventData:Dashboard.eventData,
+                        phoneData:Dashboard.eventData.phoneData
+                    }))
+                },
+                preparePage:function() {
+                    var eventName = Dashboard.eventData.event || Dashboard.eventData.name
+                    var eventTitle = document.getElementById('eventName')
+                    var statusTitle = document.getElementById('status')
+                    var noPhoneDiv = document.getElementById('noPhoneDiv')
+                    var assignedPhone = document.getElementById('assignedPhone')
+                    var assignedPhoneDiv = document.getElementById('assignedPhoneDiv')
+                    var availablePhone = document.getElementById('availablePhone')
+                    var availablePhoneDiv = document.getElementById('availablePhoneDiv')
+                    var assignAvailablePhone = document.getElementById('assignAvailablePhone')
+                    var assignedPhoneExists = !Dashboard.objectIsEmpty(Dashboard.eventData.phoneData)
+
+                    function prepareAssignedPhone() {
+                        assignedPhone.innerText = Dashboard.eventData.phoneData.phone
+                        releaseAssignedPhone.addEventListener('click',Dashboard.releaseAssignedPhone)
+                        assignedPhoneDiv.style.display = 'block'
+                    }
+
+                    function prepareNoPhonesExist() {
+                        noPhoneDiv.style.display = 'block'
+                    }
+
+                    function preparePhonesExist() {
+                        for (var i=0; i < Dashboard.phoneDataArray.length; i++) {
+                            var option = document.createElement('option')
+                            option.value = Dashboard.phoneDataArray[i].phone
+                            option.innerText = Dashboard.phoneDataArray[i].phone
+                            option.id = Dashboard.phoneDataArray[i]._id
+                            if (i == 0) {
+                                option.selected = true
+                            }
+                            availablePhone.appendChild(option)
+                        }
+                        assignAvailablePhone.addEventListener('click',Dashboard.assignAvailablePhone)
+                        availablePhoneDiv.style.display = 'block'
+                    }
+
+                    if (assignedPhoneExists) {
+                        prepareAssignedPhone()
+                    } else if (Dashboard.phoneDataArray.length == 0) {
+                        prepareNoPhonesExist()
+                    } else if (Dashboard.phoneDataArray.length > 0) {
+                        preparePhonesExist()
+                    }
+
+                    // Event Name
+                    eventTitle.innerText = 'Event: ' + eventName
+                    statusTitle.innerText = 'Status: ' + Dashboard.status
+                },
+                initialize:function() {
+                    var getUrl = Dashboard.rootUrl + '/getEventData'
+                    var statusTitle = document.getElementById('status')
+                    var xhr = new XMLHttpRequest
+                    xhr.open("POST", getUrl)
+                    xhr.setRequestHeader("Content-Type", "application/json")
+                    xhr.onreadystatechange = function() {
+                        if (this.readyState == 4) {
+                            if (this.status == 200) {
+                                Dashboard.eventData = JSON.parse(xhr.response).eventData
+                                Dashboard.phoneDataArray = JSON.parse(xhr.response).phoneDataArray
+                                Dashboard.preparePage()
+                                console.log(Dashboard.eventData)
+                                console.log(Dashboard.phoneDataArray)
+                            } else {
+                                statusTitle.innerText = 'Error getting data.'
+                                return
+                            }
+                        }
+                    }
+                    // Send the request.
+                    xhr.send(JSON.stringify({
+                        eventDataId:Dashboard.id
+                    }))
                 }
-            }
-            // Send the request.
-            xhr.send(JSON.stringify({
-                eventDataId:eventDataId
-            }))
+            };
+
+            Dashboard.initialize()
 
         </script>
 

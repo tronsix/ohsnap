@@ -76,9 +76,11 @@ module.exports.purchaseNumber = function(req,res,next) {
         }, function(err,number) {
             if (err){ console.log(err);return res.sendStatus(500) }
             var pNumber = number.phone_number || number.phoneNumber || number
+            var friendlyNumber = number.friendlyName || number.FriendlyName
             var phone = new Phone({
                 owner:req.user.email,
-                phone:pNumber
+                phone:pNumber,
+                friendlyPhone:friendlyName
             })
             phone.save(function(err){
                 if (err){ console.log(err);return res.sendStatus(500) }

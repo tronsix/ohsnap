@@ -1,0 +1,10 @@
+input,button,p {
+    display: block;
+}
+button {
+    margin-bottom: 25px;
+}
+p {
+    font-size: 12px;
+    color:#009688;
+}

@@ -3,13 +3,14 @@ var mongoose = require('mongoose')
 var eventSchema = new mongoose.Schema({
     owner:String,
     event:String,
-    phoneData:{}
+    phoneData:mongoose.Schema.Types.Mixed
 },{ timestamps: true })
 
 var phoneSchema = new mongoose.Schema({
     owner:String,
     phone:String,
-    eventData:{}
+    friendlyPhone:String,
+    eventData:mongoose.Schema.Types.Mixed
 },{ timestamps: true })
 
 module.exports.event = mongoose.model('event', eventSchema)

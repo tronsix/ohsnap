@@ -80,13 +80,11 @@ module.exports.getEventData = function(req,res,next) {
 
 }
 
-
-
-module.exports.releasePhone = function(req,res,next) {
+module.exports.assignPhone = function(req,res,next) {
     if (!req.user) res.sendStatus(401)
 
     function updateEventData(done) {
-        UserEvent.findOne({_id:req.body.eventDataId},function(err,eventData) {
+        UserEvent.findOne({_id:req.body.eventData._id},function(err,eventData) {
             if (err) {
                 done(err,[500])
             } else if (!eventData) {
@@ -94,7 +92,8 @@ module.exports.releasePhone = function(req,res,next) {
             } else if (eventData.owner !== req.user.email) {
                 done(true,[401])
             } else {
-                eventData.phone = {}
+                eventData.phoneData = req.body.phoneData
+                eventData.markModified('phoneData')
                 eventData.save(function(err) {
                     if (err) {
                         done(err,[500])
@@ -107,7 +106,7 @@ module.exports.releasePhone = function(req,res,next) {
     }
 
     function updatePhoneData(done) {
-        Phone.findOne({_id:req.body.phoneDataId},function(err,phoneData){
+        Phone.findOne({_id:req.body.phoneData._id},function(err,phoneData){
             if (err) {
                 done(err,[500])
             } else if (!phoneData) {
@@ -115,7 +114,8 @@ module.exports.releasePhone = function(req,res,next) {
             } else if (phoneData.owner !== req.user.email) {
                 done(true,[401])
             } else {
-                phoneData.phone = {}
+                phoneData.eventData = req.body.eventData
+                phoneData.markModified('eventData')
                 phoneData.save(function(err) {
                     if (err) {
                         done(err,[500])
@@ -140,11 +140,15 @@ module.exports.releasePhone = function(req,res,next) {
     })
 }
 
-module.exports.assignPhone = function(req,res,next) {
+
+
+
+
+module.exports.releasePhone = function(req,res,next) {
     if (!req.user) res.sendStatus(401)
 
     function updateEventData(done) {
-        UserEvent.findOne({_id:req.body.eventDataId},function(err,eventData) {
+        UserEvent.findOne({_id:req.body.eventData._id},function(err,eventData) {
             if (err) {
                 done(err,[500])
             } else if (!eventData) {
@@ -152,7 +156,8 @@ module.exports.assignPhone = function(req,res,next) {
             } else if (eventData.owner !== req.user.email) {
                 done(true,[401])
             } else {
-                eventData.phone = req.body.phoneData
+                eventData.phoneData = {}
+                eventData.markModified('phoneData')
                 eventData.save(function(err) {
                     if (err) {
                         done(err,[500])
@@ -165,7 +170,7 @@ module.exports.assignPhone = function(req,res,next) {
     }
 
     function updatePhoneData(done) {
-        Phone.findOne({_id:req.body.phoneDataId},function(err,phoneData){
+        Phone.findOne({_id:req.body.phoneData._id},function(err,phoneData){
             if (err) {
                 done(err,[500])
             } else if (!phoneData) {
@@ -173,7 +178,8 @@ module.exports.assignPhone = function(req,res,next) {
             } else if (phoneData.owner !== req.user.email) {
                 done(true,[401])
             } else {
-                phoneData.phone = req.body.eventData
+                phoneData.eventData = {}
+                phoneData.markModified('eventData')
                 phoneData.save(function(err) {
                     if (err) {
                         done(err,[500])
