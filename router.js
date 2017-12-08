@@ -41,7 +41,7 @@ var apiRouter = require('express').Router()
 // Treat headers (mostly for Cors-Header requests).
 apiRouter.all('*',handleRequest)
 
-// Admin pages.
+// Login routes.
 var loginPage = require('./backend/login')
 apiRouter.get('/login',loginPage.getLogin)
 apiRouter.post('/login',loginPage.postLogin)
@@ -49,10 +49,15 @@ apiRouter.post('/create',loginPage.postCreate)
 apiRouter.post('/reset',loginPage.postReset)
 apiRouter.post('/update',loginPage.postUpdate)
 
-// Login pages.
+// Dashboard routes.
 var dashboardPage = require('./backend/dashboard')
 apiRouter.get('/dashboard',dashboardPage.getDashboard)
 apiRouter.post('/createEvent',dashboardPage.createEvent)
+apiRouter.post('/purchaseNumber',dashboardPage.purchaseNumber)
+
+// Event routes.
+var eventPage = require('./backend/event')
+apiRouter.get('/event/:eventid',eventPage.getEvent)
 
 // Routes land here if they dont match any other api endpoint.
 apiRouter.all('*',function(req,res,next) { res.sendStatus(404) })

@@ -46,7 +46,7 @@
     <br>
     
     <% for(var i=0; i<events.length; i++) {%>
-        <p><a href="<%= global.rootUrl + '/events/' + events[i]._id %>"><%= events[i].name %></a></p>
+        <p><a href="<%= global.rootUrl + '/event/' + events[i]._id %>"><%= events[i].name %></a></p>
         <p><%= events[i].phone %></p>
         <br>
     <% } %>
@@ -55,8 +55,8 @@
 
     <p>Phone Numbers</p>
     <br>
-    <input type="text" placeholder="Area Code">
-    <button>Buy A Number</button>
+    <input id="areaCode" type="text" placeholder="Area Code">
+    <button id="purchaseNumber">Buy A Number</button>
     <br>
 
     <% for(var i=0; i<phones.length; i++) {%>
@@ -90,6 +90,29 @@
             // Send the request.
             xhr.send(JSON.stringify({
                 eventName:eventName
+            }))
+        })
+        document.getElementById('purchaseNumber').addEventListener('click', function() {
+            var areaCode = document.getElementById('areaCode').value
+
+            if (areaCode.length < 1) return
+
+            // Create the request.
+            var xhr = new XMLHttpRequest()
+            xhr.open("POST", "<%= global.rootUrl %>/purchaseNumber")
+            xhr.setRequestHeader("Content-Type", "application/json")
+            xhr.onreadystatechange = function() {
+                if (this.readyState == 4) {
+                    if (this.status == 200) {
+                        window.location.reload()
+                    } else {
+                        document.getElementById('status').innerText = 'Error purchasing number.'
+                    }
+                }
+            }
+            // Send the request.
+            xhr.send(JSON.stringify({
+                areaCode:areaCode
             }))
         })
     </script>

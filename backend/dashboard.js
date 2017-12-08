@@ -58,14 +58,34 @@ module.exports.createEvent = function(req,res,next) {
 
 }
 
-module.exports.buyPhone = function(req,res,next) {
-    
-    
-    req.body.areaCode
+module.exports.purchaseNumber = function(req,res,next) {
 
-    var newPhone = new Phone({
+    var twilio = require('twilio')(process.env.TWILIO_SID,process.env.TWILIO_AUTH_TOKEN)
 
+    twilio.availablePhoneNumbers('US').local.list({
+        areaCode: req.body.areaCode,
+        voiceEnabled: true,
+        smsEnabled: true
+    }).then(function(searchResults) {
+        if (searchResults.length === 0) res.sendStatus(401)
+        twilio.incomingPhoneNumbers.create({
+            phoneNumber: searchResults[0].phoneNumber,
+            smsMethod: 'POST',
+            smsUrl: global.rootUrl + '/twilio/message'
+        }, function(err,number) {
+            console.log(number)
+            var pNumber = number.phone_number || number.phoneNumber || number
+            var phone = new Phone({
+                owner:req.user.email,
+                phone:pNumber
+            })
+            phone.save(function(err){
+                if (err){ console.log(err);return res.sendStatus(500) }
+                res.sendStatus(200)
+            })
+        })
     })
+
 }
 
 
