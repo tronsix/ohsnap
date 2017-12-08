@@ -70,8 +70,8 @@ module.exports.purchaseNumber = function(req,res,next) {
         if (searchResults.length === 0) res.sendStatus(401)
         twilio.incomingPhoneNumbers.create({
             phoneNumber: searchResults[0].phoneNumber,
-            smsMethod: 'POST',
-            smsUrl: global.rootUrl + '/twilio/message'
+            SmsMethod: 'POST',
+            SmsUrl: global.rootUrl + '/twilio/message'
         }, function(err,number) {
             console.log(number)
             var pNumber = number.phone_number || number.phoneNumber || number
