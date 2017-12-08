@@ -2,14 +2,14 @@ var mongoose = require('mongoose')
 
 var eventSchema = new mongoose.Schema({
     owner:String,
-    name:String,
-    phone:String
+    event:String,
+    phoneData:{}
 },{ timestamps: true })
 
 var phoneSchema = new mongoose.Schema({
     owner:String,
     phone:String,
-    event:String
+    eventData:{}
 },{ timestamps: true })
 
 module.exports.event = mongoose.model('event', eventSchema)

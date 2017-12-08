@@ -24,55 +24,105 @@
     .smallBreak {
         display: block;
         width: 100%;
-        height: 25px;
+        height: auto;
     }
     .tallBreak {
         display: block;
         width: 100%;
         height: 50px;
     }
+    #eventDiv {
+        display: none;
+        margin-top: 25px;
+    }
+    div {
+        margin:25px 0 25px 0;
+    }
 </style>
 </head>
 <body>
 
     <p id="status"><%= status %></p>
+    <div class="smallBreak"></div>
+    <p id="eventName"></p>
 
-        <div class="smallBreak"></div>
+    <div id="assignedPhoneDiv" style="display:none;">
+        <p id="assignedPhone"></p>
+        <button id="releasePhone">Release Phone</button>
+    </div>
 
-    <p>Name: <%= eventData.name %></p>
-    <br>
-    <p>Phone: <%= eventData.phone %></p>
-    <br>
+    <div id="availablePhoneDiv" style="display:none;">
+        <select id="availablePhone">
+        </select>
+        <button id="assignPhone">Assign Phone</button>
+    </div>
 
-        <div class="smallBreak"></div>
+    <div id="noPhoneDiv" style="display:none;">
+        <p>Purchase a number from the dashboard.</p>
+    </div>
 
-    
 
-    <script>
-        // document.getElementById('createEvent').addEventListener('click', function() {
-        //     var eventName = document.getElementById('eventName').value
+        <script>
 
-        //     if (eventName.length < 1) return
+            function isEmpty(obj) {
+                if (typeof obj == 'undefined') return true
+                if (typeof obj == 'null') return true
+                for(var prop in obj) {
+                    if (obj.hasOwnProperty(prop)) return false
+                }
+                return JSON.stringify(obj) === JSON.stringify({})
+            }
 
-        //     // Create the request.
-        //     var xhr = new XMLHttpRequest()
-        //     xhr.open("POST", "<%= global.rootUrl %>/createEvent")
-        //     xhr.setRequestHeader("Content-Type", "application/json")
-        //     xhr.onreadystatechange = function() {
-        //         if (this.readyState == 4) {
-        //             if (this.status == 200) {
-        //                 window.location.reload()
-        //             } else {
-        //                 document.getElementById('status').innerText = 'Error creating event.'
-        //             }
-        //         }
-        //     }
-        //     // Send the request.
-        //     xhr.send(JSON.stringify({
-        //         eventName:eventName
-        //     }))
-        // })
-    </script>
+            function preparePage() {
+                // Currently Assigned Phone
+                var assignedPhoneExists = !isEmpty(data.eventData.phoneData)
+                if (assignedPhoneExists) {
+                    document.getElementById('assignedPhone').innerText = data.eventData.phoneData.phone
+                    document.getElementById('assignedPhoneDiv').style.display = 'block'
+                } else if (data.phoneDataArray.length == 0) {
+                    document.getElementById('noPhoneDiv').style.display = 'block'
+                } else if (data.phoneDataArray.length > 0) {
+                    for (var i=0;i<data.phoneDataArray.length;i++) {
+                        var option = document.createElement('option')
+                        option.value = data.phoneDataArray[i].phone
+                        option.innerText = data.phoneDataArray[i].phone
+                        if (i == 0) {
+                            option.selected = true
+                        }
+                        document.getElementById('availablePhone').appendChild(option)
+                    }
+                    document.getElementById('availablePhoneDiv').style.display = 'block'
+                }
+
+                // Event Name
+                var eventName = data.eventData.event || data.eventData.name
+                document.getElementById('eventName').innerText = 'Event: ' + eventName
+            }
+
+            var status = '<%= status %>'
+            var eventDataId = '<%= eventDataId %>'
+            var data;
+            var xhr = new XMLHttpRequest()
+
+            xhr.open("POST", "<%= global.rootUrl %>/getEventData")
+            xhr.setRequestHeader("Content-Type", "application/json")
+            xhr.onreadystatechange = function() {
+                if (this.readyState == 4) {
+                    if (this.status == 200) {
+                        data = JSON.parse(xhr.response)
+                        preparePage()
+                    } else {
+                        document.getElementById('status').innerText = 'Error getting data.'
+                        return
+                    }
+                }
+            }
+            // Send the request.
+            xhr.send(JSON.stringify({
+                eventDataId:eventDataId
+            }))
+
+        </script>
 
 </body>
 </html>

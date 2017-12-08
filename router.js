@@ -58,6 +58,9 @@ apiRouter.post('/purchaseNumber',dashboardPage.purchaseNumber)
 // Event routes.
 var eventPage = require('./backend/event')
 apiRouter.get('/event/:eventid',eventPage.getEvent)
+apiRouter.post('/getEventData',eventPage.getEventData)
+apiRouter.post('/assignPhone',eventPage.assignPhone)
+apiRouter.post('/releasePhone',eventPage.releasePhone)
 
 // Routes land here if they dont match any other api endpoint.
 apiRouter.all('*',function(req,res,next) { res.sendStatus(404) })
