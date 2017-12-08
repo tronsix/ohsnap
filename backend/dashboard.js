@@ -74,6 +74,7 @@ module.exports.purchaseNumber = function(req,res,next) {
             smsUrl: url,
             smsMethod: 'POST'
         }, function(err,number) {
+            if (err){ console.log(err);return res.sendStatus(500) }
             var pNumber = number.phone_number || number.phoneNumber || number
             var phone = new Phone({
                 owner:req.user.email,
