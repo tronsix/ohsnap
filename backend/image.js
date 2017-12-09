@@ -35,6 +35,8 @@ module.exports.postMessage = function(req,res,next) {
     var requestedImage = 'FunRun' + Number(req.body.message)
     var sendImage = ''
 
+    console.log(requestedImage)
+
     s3Object.s3.listObjects(s3Object.s3Params,function(err,data){
         if (err) {
             console.log(err)
