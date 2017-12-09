@@ -45,7 +45,7 @@ xhttp.onreadystatechange = function() {
        }
     }
 };
-xhttp.open("GET", "https://nameless-fortress-95164.herokuapp.com/photos", true);
+xhttp.open("GET", "https://shop-lnp-media.herokuapp.com/photos", true);
 xhttp.send();
 </script>
 
