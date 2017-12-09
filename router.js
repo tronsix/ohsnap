@@ -54,7 +54,7 @@ var dashboardPage = require('./backend/dashboard')
 apiRouter.get('/dashboard',dashboardPage.getDashboard)
 apiRouter.post('/getDashboardData',dashboardPage.getDashboardData)
 apiRouter.post('/createEvent',dashboardPage.createEvent)
-apiRouter.post('/purchaseNumber',dashboardPage.purchaseNumber)
+apiRouter.post('/purchasePhone',dashboardPage.purchasePhone)
 
 // Event routes.
 var eventPage = require('./backend/event')

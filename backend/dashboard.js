@@ -77,7 +77,7 @@ module.exports.createEvent = function(req,res,next) {
     }
 }
 
-module.exports.purchaseNumber = function(req,res,next) {
+module.exports.purchasePhone = function(req,res,next) {
     if (!req.user) {
         res.sendStatus(401)
     } else {

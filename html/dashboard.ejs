@@ -25,7 +25,7 @@
         <p>Phone Numbers</p>
         <br>
         <input id="areaCode" type="text" placeholder="Area Code">
-        <button id="purchaseNumber">Buy A Number</button>
+        <button id="purchasePhone">Buy A Number</button>
         <br>
     </div>
 
@@ -72,14 +72,14 @@
                     eventName:eventName
                 }))
             },
-            purchaseNumber:function() {
+            purchasePhone:function() {
                 var areaCode = document.getElementById('areaCode').value
 
                 if (areaCode.length < 1) return
 
                 // Create the request.
                 var xhr = new XMLHttpRequest()
-                xhr.open("POST", "<%= global.rootUrl %>/purchaseNumber")
+                xhr.open("POST", "<%= global.rootUrl %>/purchasePhone")
                 xhr.setRequestHeader("Content-Type", "application/json")
                 xhr.onreadystatechange = function() {
                     if (this.readyState == 4) {
@@ -102,7 +102,7 @@
                 var createEvent = document.getElementById('createEvent')
                 var phoneDiv = document.getElementById('phoneDiv')
                 var areaCodeInput = document.getElementById('areaCode')
-                var purchaseNumber = document.getElementById('purchaseNumber')
+                var purchasePhone = document.getElementById('purchasePhone')
 
                 function prepareEvents() {
 
@@ -144,8 +144,8 @@
                     Dashboard.createEvent()
                 })
 
-                document.getElementById('purchaseNumber').addEventListener('click', function() {
-                    Dashboard.purchaseNumber()
+                document.getElementById('purchasePhone').addEventListener('click', function() {
+                    Dashboard.purchasePhone()
                 })
 
                 var statusTitle = document.getElementById('status')
