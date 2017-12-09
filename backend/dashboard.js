@@ -57,19 +57,22 @@ module.exports.createEvent = function(req,res,next) {
         function createEvent(done) {
             var newEvent = new UserEvent({
                 owner:req.user.email,
-                name:req.body.eventName
+                event:req.body.eventName
             })
             newEvent.save(function(err){
-                if (err) done(err,500)
-                done(null,200)
+                if (err) {
+                    done(err,[500])
+                } else {
+                    done(null)
+                } 
             })
         }
     
         async.waterfall([
             createEvent
-        ], function (err, result) {
-            if (err) { console.log(err);return res.sendStatus(result) }
-            res.sendStatus(result)
+        ], function (err, resultArray) {
+            if (err) { console.log(err);return res.sendStatus(resultArray[0]) }
+            res.sendStatus(200)
         })
     }
 }
@@ -78,34 +81,65 @@ module.exports.purchaseNumber = function(req,res,next) {
     if (!req.user) {
         res.sendStatus(401)
     } else {
-        var twilio = require('twilio')(process.env.TWILIO_SID,process.env.TWILIO_AUTH_TOKEN)
-        
-        twilio.availablePhoneNumbers('US').local.list({
-            areaCode: req.body.areaCode,
-            voiceEnabled: true,
-            smsEnabled: true
-        }).then(function(searchResults) {
-            if (searchResults.length === 0) res.sendStatus(401)
+
+        function findAvailablePhones(done) {
+            twilio.availablePhoneNumbers('US').local.list({
+                areaCode: req.body.areaCode,
+                voiceEnabled: true,
+                smsEnabled: true
+            }).then(function(searchResults) {
+                if (searchResults.length === 0) {
+                    done(true,[401])
+                } else {
+                    done(null,searchResults)
+                }
+            })
+        }
+
+
+        function purchasePhone(searchResults,done) {
             var url = global.rootUrl + '/twilio/message'
             twilio.incomingPhoneNumbers.create({
                 phoneNumber: searchResults[0].phoneNumber,
                 smsUrl: url,
                 smsMethod: 'POST'
             }, function(err,number) {
-                if (err){ console.log(err);return res.sendStatus(500) }
-                var pNumber = number.phone_number || number.phoneNumber || number
-                var friendlyNumber = number.friendlyName || number.FriendlyName
-                var phone = new Phone({
-                    owner:req.user.email,
-                    phone:pNumber,
-                    friendlyPhone:friendlyName
-                })
-                phone.save(function(err){
-                    if (err){ console.log(err);return res.sendStatus(500) }
-                    res.sendStatus(200)
-                })
+                if (err){
+                    done(true,[500])
+                } else {
+                    done(null,number)
+                }
             })
+        }
+
+        function updatePhoneData(number,done) {
+            var newNumber = number.phone_number || number.phoneNumber || number
+            var friendlyName = number.friendlyName || number.FriendlyName
+            var phone = new Phone({
+                owner:req.user.email,
+                phone:newNumber,
+                friendlyName:friendlyName
+            })
+            phone.save(function(err){
+                if (err){
+                    done(true,[500])
+                } else {
+                    done(null)
+                }
+            })
+        }
+
+        var twilio = require('twilio')(process.env.TWILIO_SID,process.env.TWILIO_AUTH_TOKEN)
+
+        async.waterfall([
+            findAvailablePhones,
+            purchasePhone,
+            updatePhoneData
+        ], function(err,resultArray) {
+            if (err) { console.log(err);return res.sendStatus(resultArray[0]) }
+            res.sendStatus(200)
         })
+
     }
 }
 

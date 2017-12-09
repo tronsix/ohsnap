@@ -49,6 +49,52 @@
                 }
                 return JSON.stringify(obj) === JSON.stringify({})
             },
+            createEvent:function() {
+                var eventName = document.getElementById('createEventName').value
+
+                if (eventName.length < 1) return
+
+                // Create the request.
+                var xhr = new XMLHttpRequest()
+                xhr.open("POST", "<%= global.rootUrl %>/createEvent")
+                xhr.setRequestHeader("Content-Type", "application/json")
+                xhr.onreadystatechange = function() {
+                    if (this.readyState == 4) {
+                        if (this.status == 200) {
+                            window.location.reload()
+                        } else {
+                            document.getElementById('status').innerText = 'Error creating event.'
+                        }
+                    }
+                }
+                // Send the request.
+                xhr.send(JSON.stringify({
+                    eventName:eventName
+                }))
+            },
+            purchaseNumber:function() {
+                var areaCode = document.getElementById('areaCode').value
+
+                if (areaCode.length < 1) return
+
+                // Create the request.
+                var xhr = new XMLHttpRequest()
+                xhr.open("POST", "<%= global.rootUrl %>/purchaseNumber")
+                xhr.setRequestHeader("Content-Type", "application/json")
+                xhr.onreadystatechange = function() {
+                    if (this.readyState == 4) {
+                        if (this.status == 200) {
+                            window.location.reload()
+                        } else {
+                            document.getElementById('status').innerText = 'Error purchasing number.'
+                        }
+                    }
+                }
+                // Send the request.
+                xhr.send(JSON.stringify({
+                    areaCode:areaCode
+                }))
+            },
             preparePage:function() {
 
                 var eventDiv = document.getElementById('eventDiv')
@@ -86,13 +132,21 @@
                     for(var i = 0; i < Dashboard.phoneDataArray.length; i++) {
                         var p = document.createElement('p')
                         var br = document.createElement('br')
-                        p.innerText = Dashboard.phoneDataArray[i].phone
+                        p.innerText = Dashboard.phoneDataArray[i].phone || Dashboard.phoneDataArray[i].phone
                         phoneDiv.appendChild(p)
                         phoneDiv.appendChild(br)
                     }
 
                     phoneDiv.style.display = 'block'
                 }
+
+                document.getElementById('createEvent').addEventListener('click', function() {
+                    Dashboard.createEvent()
+                })
+
+                document.getElementById('purchaseNumber').addEventListener('click', function() {
+                    Dashboard.purchaseNumber()
+                })
 
                 var statusTitle = document.getElementById('status')
                 statusTitle.innerText = Dashboard.status
@@ -126,52 +180,6 @@
 
         Dashboard.initialize()
 
-        document.getElementById('createEvent').addEventListener('click', function() {
-            var eventName = document.getElementById('eventName').value
-
-            if (eventName.length < 1) return
-
-            // Create the request.
-            var xhr = new XMLHttpRequest()
-            xhr.open("POST", "<%= global.rootUrl %>/createEvent")
-            xhr.setRequestHeader("Content-Type", "application/json")
-            xhr.onreadystatechange = function() {
-                if (this.readyState == 4) {
-                    if (this.status == 200) {
-                        window.location.reload()
-                    } else {
-                        document.getElementById('status').innerText = 'Error creating event.'
-                    }
-                }
-            }
-            // Send the request.
-            xhr.send(JSON.stringify({
-                eventName:eventName
-            }))
-        })
-        document.getElementById('purchaseNumber').addEventListener('click', function() {
-            var areaCode = document.getElementById('areaCode').value
-
-            if (areaCode.length < 1) return
-
-            // Create the request.
-            var xhr = new XMLHttpRequest()
-            xhr.open("POST", "<%= global.rootUrl %>/purchaseNumber")
-            xhr.setRequestHeader("Content-Type", "application/json")
-            xhr.onreadystatechange = function() {
-                if (this.readyState == 4) {
-                    if (this.status == 200) {
-                        window.location.reload()
-                    } else {
-                        document.getElementById('status').innerText = 'Error purchasing number.'
-                    }
-                }
-            }
-            // Send the request.
-            xhr.send(JSON.stringify({
-                areaCode:areaCode
-            }))
-        })
     </script>
 
 </body>
