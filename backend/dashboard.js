@@ -88,7 +88,6 @@ module.exports.purchasePhone = function(req,res,next) {
                 voiceEnabled: true,
                 smsEnabled: true
             }).then(function(searchResults) {
-                console.log(searchResults.length)
                 if (searchResults.length === 0) {
                     done(true,[401])
                 } else {
@@ -105,11 +104,8 @@ module.exports.purchasePhone = function(req,res,next) {
                 smsUrl: url,
                 smsMethod: 'POST'
             }, function(err,number) {
-                console.log(err)
-                console.log(number.phone_number)
-                console.log(number.phoneNumber)
                 if (err){
-                    done(true,[500])
+                    done(err,[500])
                 } else {
                     done(null,number)
                 }
@@ -117,17 +113,18 @@ module.exports.purchasePhone = function(req,res,next) {
         }
 
         function updatePhoneData(number,done) {
-            var newNumber = number.phone_number || number.phoneNumber || number
+            var newNumber = number.phoneNumber
             var friendlyName = number.friendlyName || number.FriendlyName
+            console.log(number.friendlyName)
+            console.log(number.FriendlyName)
             var phone = new Phone({
                 owner:req.user.email,
                 phone:newNumber,
                 friendlyName:friendlyName
             })
             phone.save(function(err){
-                console.log(err)
                 if (err){
-                    done(true,[500])
+                    done(err,[500])
                 } else {
                     done(null)
                 }
