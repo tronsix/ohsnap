@@ -114,9 +114,7 @@ module.exports.purchasePhone = function(req,res,next) {
 
         function updatePhoneData(number,done) {
             var newNumber = number.phoneNumber
-            var friendlyName = number.friendlyName || number.FriendlyName
-            console.log(number.friendlyName)
-            console.log(number.FriendlyName)
+            var friendlyName = number.friendlyName
             var phone = new Phone({
                 owner:req.user.email,
                 phone:newNumber,
