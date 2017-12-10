@@ -48,8 +48,13 @@
                 for(var i = 0;i < Home.imageArray.length; i++) {
                     var imageElement = document.createElement('img')
                     imageElement.src = Home.imageArray[i]
+
+                    var aElement = document.createElement('a')
+                    aElement.href = '/images/FunRun42'
+                    aElement.target = '_blank'
+                    aElement.appendChild(imageElement)
                     console.log(Home.imageArray[i])
-                    document.getElementById('imageContainer').appendChild(imageElement)
+                    document.getElementById('imageContainer').appendChild(aElement)
                     count ++
 
                     if (count == 10) {
