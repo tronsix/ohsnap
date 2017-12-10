@@ -71,6 +71,7 @@ apiRouter.post('/twilio/message',shopPage.postMessage)
 // Home routes.
 var homePage = require('./backend/home')
 apiRouter.get('/home',homePage.getHome)
+apiRouter.get('/',homePage.getHome)
 apiRouter.post('/getHomeData',homePage.getHomeData)
 
 // Routes land here if they dont match any other api endpoint.
