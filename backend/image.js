@@ -1,6 +1,4 @@
 module.exports.getImage = function(req,res,next) {
-    console.log(req.params.image)
-
     var imageUrl = process.env.S3_HOST_URL + '/' + process.env.S3_BUCKET + '/' + req.params.image + '.jpg'
 
     res.render('../html/image',{
@@ -16,6 +14,8 @@ module.exports.postMessage = function(req,res,next) {
     if (Number(req.body.Body) < 1) {
         module.exports.sendTwilioMessage(req,res,next,'Could not find image. Fix your message and try again.')
     } else {
+        console.log(req.body.Body)
+        // console.log(req.body.Body)
 
         function creates3Object() {
             var aws = require('aws-sdk')
@@ -38,10 +38,6 @@ module.exports.postMessage = function(req,res,next) {
         var requestedImage = 'FunRun' + Number(req.body.Body)
         var sendImage = ''
 
-        console.log(requestedImage)
-
-        console.log(s3Object)
-
         s3Object.s3.listObjects(s3Object.s3Params,function(err,data){
             if (err) {
                 console.log(err)
@@ -51,9 +47,6 @@ module.exports.postMessage = function(req,res,next) {
                 for (var i = 0; i < data.Contents.length; i++) {
                     var imageName = data.Contents[i]['Key'].replace('.jpg','')
                     if (imageName == requestedImage) {
-                        console.log('found')
-                        console.log(data.Contents[i])
-                        console.log(imageName)
                         sendImage = 'https://shop-lnp-media.herokuapp.com/images' + '/' + imageName
                     }
                 }
