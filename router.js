@@ -68,6 +68,10 @@ var shopPage = require('./backend/image')
 apiRouter.get('/images/:image',shopPage.getImage)
 apiRouter.post('/twilio/message',shopPage.postMessage)
 
+// Home routes.
+var homePage = require('./backend/home')
+apiRouter.get('/home',homePage.getHome)
+
 // Routes land here if they dont match any other api endpoint.
 apiRouter.all('*',function(req,res,next) { res.sendStatus(404) })
 
