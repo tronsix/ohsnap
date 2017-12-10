@@ -15,6 +15,7 @@ module.exports.postMessage = function(req,res,next) {
         module.exports.sendTwilioMessage(req,res,next,'Could not find image. Fix your message and try again.')
     } else {
         console.log(req.body.Body)
+        console.log(req.body)
         // console.log(req.body.Body)
 
         function creates3Object() {
