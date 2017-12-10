@@ -2,82 +2,91 @@
 <html>
 <head>
     <title>Trail of Lights 2017</title>
-
-    <meta property="og:url" content="<%= imageUrl %>" />
-    <!-- <meta property="og:type" content="article" /> -->
+    <meta property="og:url" content="" />
+    <meta property="og:image" content="" />
+    <meta property="og:type" content="article" />
     <meta property="og:title" content="Trail of Lights 2017" />
     <meta property="og:description" content="Trail of Lights 2017" />
-    <meta property="og:image" content="<%= imageUrl %>" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <style>
         img {
             max-width: 100%;
             height: auto;
         }
-        .imagecontainer {
-            display: flex;
-            width: 100%;
-            height: auto;
-            flex-direction: row;
-            justify-content: center;
-        }
     </style>
 </head>
 <body>
 
-    <!-- <div "> -->
-        <img src="<%= imageUrl %>">
-        <img src="<%= imageUrl %>">
-        <img src="<%= imageUrl %>">
-        <img src="<%= imageUrl %>">
-        <img src="<%= imageUrl %>">
-        <img src="<%= imageUrl %>">
-        <img src="<%= imageUrl %>">
-        <img src="<%= imageUrl %>">
-        <img src="<%= imageUrl %>">
-        <img src="<%= imageUrl %>">
-        <img src="<%= imageUrl %>">
-        <img src="<%= imageUrl %>">
-        <img src="<%= imageUrl %>">
-        <img src="<%= imageUrl %>">
-        <img src="<%= imageUrl %>">
-        <img src="<%= imageUrl %>">
-        <img src="<%= imageUrl %>">
-        <img src="<%= imageUrl %>">
-        <img src="<%= imageUrl %>">
-        <img src="<%= imageUrl %>">
-    <!-- </div> -->
+    <div id="imageContainer">
 
-        <br>
-        <br>
+    </div>
 
-        <button id="previous">Previous Photo</button>
-        <br><br>
-        <button id="next">Next Photo</button>
+    <script>
+        var Home = {
+            working:false,
+            imageArray:null,
+            prepareListener:function() {
+                window.addEventListener('scroll',function(e) {
+                    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+                        if (Home.working == true) {
+                            console.log('Still working')
+                        } else {
+                            console.log('Loading Images')
+                            Home.working = true
+                            Home.loadImages()
+                            setTimeout(function(){
+                                Home.working = false
+                            },10)
+                        }
+                    }
+                })
+            },
+            loadImages:function() {
+                var count = 0;
 
-        <script>
+                for(var i = 0;i < Home.imageArray.length; i++) {
+                    var imageElement = document.createElement('img')
+                    imageElement.src = Home.imageArray[i]
+                    console.log(Home.imageArray[i])
+                    document.getElementById('imageContainer').appendChild(imageElement)
+                    count ++
 
-            function goTo(direction) {
-                var base = window.location.href.split('FunRun')[0]
-                var oldNumber = window.location.href.split('FunRun')[1]
-                var newNumber;
-                if (direction == 'previous') {
-                    newNumber = Number(oldNumber) - 1
-                } else {
-                    newNumber = Number(oldNumber) + 1
+                    if (count == 10) {
+                        break;
+                    }
                 }
-                var url = base + 'FunRun' + newNumber
-                window.location.assign(url)
-            }
 
-            document.getElementById('previous').addEventListener('click',function(){
-                goTo('previous')
-            })
-            document.getElementById('next').addEventListener('click',function(){
-                goTo('next')
-            })
-        </script>
+                Home.imageArray.splice(0,count)
+
+            },
+            initialize:function() {
+                var postUrl = '<%= global.rootUrl %>' + '/getHomeData'
+                var xhr = new XMLHttpRequest
+                xhr.open("POST", postUrl)
+                xhr.setRequestHeader("Content-Type", "application/json")
+                xhr.onreadystatechange = function() {
+                    if (this.readyState == 4) {
+                        if (this.status == 200) {
+                            Home.imageArray = JSON.parse(xhr.response).imageArray
+                            console.log(Home.imageArray.length)
+                            Home.prepareListener()
+                            Home.loadImages()
+                        } else {
+                            console.log('Error initializing')
+                            return
+                        }
+                    }
+                }
+                // Send the request.
+                xhr.send()
+            }
+        }
+
+        Home.initialize()
+
+        
+    </script>
     
 
 </body>
