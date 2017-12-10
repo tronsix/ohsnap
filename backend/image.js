@@ -47,14 +47,14 @@ module.exports.postMessage = function(req,res,next) {
             } else {
 
                 for (var i = 0; i < data.Contents.length; i++) {
-                    var imageName = data.Contents[key]['Key'].replace('.jpg','')
+                    var imageName = data.Contents[i]['Key'].replace('.jpg','')
                     if (imageName == requestedImage) {
                         sendImage = s3Object.s3Url + '/' + imageName
                     }
                 }
 
                 if (sendImage == '') {
-                    
+                    module.exports.sendTwilioMessage(req,res,next,'Please try again in a few minutes.')
                 } else {
                     module.exports.sendTwilioMessage(req,res,next,sendImage)
                 }
