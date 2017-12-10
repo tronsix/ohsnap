@@ -63,16 +63,18 @@ apiRouter.post('/getEventData',eventPage.getEventData)
 apiRouter.post('/assignPhone',eventPage.assignPhone)
 apiRouter.post('/releasePhone',eventPage.releasePhone)
 
-// Twilio routes.
+// Shop Page routes.
 var shopPage = require('./backend/image')
 apiRouter.get('/images/:image',shopPage.getImage)
 apiRouter.post('/twilio/message',shopPage.postMessage)
+apiRouter.post('/stripe/downloadImage',shopPage.downloadImage)
 
 // Home routes.
 var homePage = require('./backend/home')
 apiRouter.get('/home',homePage.getHome)
 apiRouter.get('/',homePage.getHome)
 apiRouter.post('/getHomeData',homePage.getHomeData)
+
 
 // Routes land here if they dont match any other api endpoint.
 apiRouter.all('*',function(req,res,next) { res.sendStatus(404) })

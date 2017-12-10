@@ -1,8 +1,15 @@
 module.exports.getImage = function(req,res,next) {
     var imageUrl = process.env.S3_HOST_URL + '/' + process.env.S3_BUCKET + '/' + req.params.image + '.jpg'
+    var stripeKey;
+    if (req.headers.host.includes(process.env.APP_NAME)) {
+        stripeKey = process.env.STRIPE_LIVE_FRONT
+    } else {
+        stripeKey = process.env.STRIPE_DEBUG_FRONT
+    }
 
     res.render('../html/image',{
-        imageUrl:imageUrl
+        imageUrl:imageUrl,
+        stripeKey:stripeKey
     })
 
 }
@@ -73,4 +80,35 @@ module.exports.sendTwilioMessage = function(req,res,next,message) {
 
     res.writeHead(200, {'Content-Type': 'text/xml'})
     res.end(twiml.toString())
+}
+
+
+module.exports.downloadImage = function(req,res,next) {
+    // Set your secret key: remember to change this to your live secret key in production
+    // See your keys here: https://dashboard.stripe.com/account/apikeys
+    var stripe;
+    if (req.headers.host.includes(process.env.APP_NAME)) {
+        stripe = require("stripe")(process.env.STRIPE_LIVE_BACK)
+    } else {
+        stripe = require("stripe")(process.env.STRIPE_DEBUG_BACK)
+    }
+
+    // Token is created using Checkout or Elements!
+    // Get the payment token ID submitted by the form:
+    var token = req.body.stripeToken; // Using Express
+
+    // Charge the user's card:
+    stripe.charges.create({
+        amount: 199,
+        currency: "usd",
+        description: "Download Image",
+        source: token,
+    }, function(err, charge) {
+    // asynchronously called
+        if (err) {
+            console.log(err)
+        } else {
+            console.log(charge)
+        }
+    });
 }

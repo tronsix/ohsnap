@@ -10,17 +10,50 @@
     <meta property="og:image" content="<%= imageUrl %>" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700" rel="stylesheet">
     <style>
         img {
             max-width: 100%;
             height: auto;
         }
-        .imagecontainer {
+        #navContainer {
             display: flex;
             width: 100%;
             height: auto;
             flex-direction: row;
-            justify-content: center;
+            justify-content: space-between;
+        }
+        .stripeContainer {
+            display: flex;
+            width: 100%;
+            height: 30px;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            align-content: center;
+        }
+        .description {
+            display:flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            height: 30px;
+            align-items: center;
+        }
+        button, h6, div {
+            font-family: 'Open Sans', sans-serif;
+        }
+        .descriptionText {
+            margin:0;
+            padding:0;
+            font-size: 13px;
+            font-weight: 400;
+            margin-right: 5px;
+        }
+        .descriptionPrice {
+            margin:0;
+            padding:0;
+            font-size: 12px;
+            font-weight: 700;
         }
     </style>
 </head>
@@ -33,9 +66,29 @@
         <br>
         <br>
 
-        <button id="previous">Previous Photo</button>
-        <br><br>
-        <button id="next">Next Photo</button>
+        <div class="stripeContainer">
+            <div class="description">
+                <h6 class="descriptionText">Download Image</h6>
+                <h6 class="descriptionPrice">$1.99</h6>
+            </div>
+            <script
+                src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                data-key="<%= stripeKey %>"
+                data-amount="199"
+                data-name="LNP Media"
+                data-description="Receive image to your email."
+                data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+                data-locale="auto">
+            </script>
+        </div>
+
+        <br>
+        <br>
+
+        <div id="navContainer">
+            <button id="previous">Previous Photo</button>
+            <button id="next">Next Photo</button>
+        </div>
 
         <script>
 
@@ -58,7 +111,23 @@
             document.getElementById('next').addEventListener('click',function(){
                 goTo('next')
             })
+
+            if (window.location.href.includes('https')) {
+
+            } else {
+                if (window.location.href.includes('lnp')) {
+                    var url = 'https://' + host + 
+                    window.location.assign(url)
+                }
+            }
+
         </script>
+
+        
+
+
+        
+
     
 
 </body>
