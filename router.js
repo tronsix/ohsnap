@@ -65,8 +65,8 @@ apiRouter.post('/releasePhone',eventPage.releasePhone)
 
 // Twilio routes.
 var shopPage = require('./backend/image')
-apiRouter.get('/images/:image',eventPage.getImage)
-apiRouter.post('/twilio/message',shopPage.displayImage)
+apiRouter.get('/images/:image',shopPage.getImage)
+apiRouter.post('/twilio/message',shopPage.postMessage)
 
 // Routes land here if they dont match any other api endpoint.
 apiRouter.all('*',function(req,res,next) { res.sendStatus(404) })

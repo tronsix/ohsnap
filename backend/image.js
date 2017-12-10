@@ -1,20 +1,3 @@
-module.exports.createObject = function() {
-    // Create aws object.
-    var aws = require('aws-sdk')
-    aws.config = new aws.Config()
-    // aws.config.accessKeyId = process.env.AWS_ACCESS_KEY_ID
-    // aws.config.secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY
-    aws.config.region = "us-east-1"
-
-    // Return s3 related items.
-    var url = process.env.S3_HOST_URL + '/' + process.env.S3_BUCKET
-    return {
-        s3:new aws.S3(),
-        s3Params:{ Bucket: process.env.S3_BUCKET },
-        s3Url: url
-    }
-}
-
 module.exports.getImage = function(req,res,next) {
     console.log(req.params.image)
 
@@ -30,8 +13,30 @@ module.exports.getImage = function(req,res,next) {
 
 module.exports.postMessage = function(req,res,next) {
 
+    console.log(req.body)
+
+    res.sendStatus(200)
+
+    return
     
-    var s3Object = module.exports.createObject()
+    function creates3Object() {
+        var aws = require('aws-sdk')
+        aws.config = new aws.Config()
+        // aws.config.accessKeyId = process.env.AWS_ACCESS_KEY_ID
+        // aws.config.secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY
+        aws.config.region = "us-east-1"
+    
+        // Return s3 related items.
+        var url = process.env.S3_HOST_URL + '/' + process.env.S3_BUCKET
+        return {
+            s3:new aws.S3(),
+            s3Params:{ Bucket: process.env.S3_BUCKET },
+            s3Url: url
+        }
+    }
+
+    
+    var s3Object = creates3Object()
     var requestedImage = 'FunRun' + Number(req.body.message)
     var sendImage = ''
 
