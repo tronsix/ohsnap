@@ -40,6 +40,8 @@ module.exports.postMessage = function(req,res,next) {
 
         console.log(requestedImage)
 
+        console.log(s3Object)
+
         s3Object.s3.listObjects(s3Object.s3Params,function(err,data){
             if (err) {
                 console.log(err)
@@ -49,7 +51,10 @@ module.exports.postMessage = function(req,res,next) {
                 for (var i = 0; i < data.Contents.length; i++) {
                     var imageName = data.Contents[i]['Key'].replace('.jpg','')
                     if (imageName == requestedImage) {
-                        sendImage = s3Object.s3Url + '/' + imageName
+                        console.log('found')
+                        console.log(data.Contents[i])
+                        console.log(imageName)
+                        sendImage = 'https://shop-lnp-media.herokuapp.com/images' + '/' + imageName
                     }
                 }
 
