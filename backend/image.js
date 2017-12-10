@@ -46,7 +46,7 @@ module.exports.postMessage = function(req,res,next) {
                 for (var i = 0; i < data.Contents.length; i++) {
                     var imageName = data.Contents[i]['Key'].replace('.jpg','')
                     if (imageName == requestedImage) {
-                        sendImage = 'https://shop-lnp-media.herokuapp.com/images' + '/' + imageName
+                        sendImage = 'https://lnp.media/images' + '/' + imageName
                     }
                 }
 
