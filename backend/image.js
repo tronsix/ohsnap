@@ -13,7 +13,7 @@ module.exports.getImage = function(req,res,next) {
 
 module.exports.postMessage = function(req,res,next) {
 
-    console.log(req.body)
+    console.log(req.body.Body)
 
     res.sendStatus(200)
 
