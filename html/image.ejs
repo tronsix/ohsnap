@@ -29,6 +29,36 @@
     <!-- <div "> -->
         <img src="<%= imageUrl %>">
     <!-- </div> -->
+
+        <br>
+        <br>
+
+        <button id="previous">Previous Photo</button>
+        <br><br>
+        <button id="next">Next Photo</button>
+
+        <script>
+
+            function goTo(direction) {
+                var base = window.location.href.split('FunRun')[0]
+                var oldNumber = window.location.href.split('FunRun')[1]
+                var newNumber;
+                if (direction == 'previous') {
+                    newNumber = Number(oldNumber) - 1
+                } else {
+                    newNumber = Number(oldNumber) + 1
+                }
+                var url = base + 'FunRun' + newNumber
+                window.location.assign(url)
+            }
+
+            document.getElementById('previous').addEventListener('click',function(){
+                goTo('previous')
+            })
+            document.getElementById('next').addEventListener('click',function(){
+                goTo('next')
+            })
+        </script>
     
 
 </body>
