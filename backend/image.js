@@ -1,7 +1,7 @@
 module.exports.getImage = function(req,res,next) {
     console.log(req.params.image)
 
-    var imageUrl = process.env.S3_HOST_URL + '/' + process.env.S3_BUCKET + '/' + req.params.image
+    var imageUrl = process.env.S3_HOST_URL + '/' + process.env.S3_BUCKET + '/' + req.params.image + '.jpg'
 
     res.render('../html/image',{
         imageUrl:imageUrl
