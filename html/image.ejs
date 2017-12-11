@@ -116,7 +116,7 @@
 
             } else {
                 if (window.location.href.includes('lnp')) {
-                    var url = 'https://' + host + 
+                    var url = 'https://' + window.location.host + window.location.pathname
                     window.location.assign(url)
                 }
             }
