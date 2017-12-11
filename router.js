@@ -1,5 +1,6 @@
 // Handles all requests.
 function handleRequest(req,res,next) {
+    console.log(req.body)
     // Sets the global variable for rootUrl.
     function setRootUrl() {
         var url;
@@ -77,7 +78,13 @@ apiRouter.post('/getHomeData',homePage.getHomeData)
 
 
 // Routes land here if they dont match any other api endpoint.
-apiRouter.all('*',function(req,res,next) { res.sendStatus(404) })
+apiRouter.all('*',function(req,res,next) { 
+    if (req.path.includes('FunRun')) {
+        res.redirect('/images' + req.path)
+    } else {
+        res.sendStatus(404) 
+    }
+})
 
 // Make the middleware available.
 module.exports = apiRouter

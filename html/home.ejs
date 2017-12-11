@@ -48,23 +48,18 @@
                 for(var i = 0;i < Home.imageArray.length; i++) {
                     var imageElement = document.createElement('img')
                     imageElement.src = Home.imageArray[i]
-                    
 
                     var aElement = document.createElement('a')
-                    var link = 'https://lnp.media/images' + String(Home.imageArray[i].split('shop-lnp-media')[1])
+                    var link = Home.imageArray[i].split('shop-lnp-media')[1]
+                    var withoutJpg = link.split('.jpg')[0]
                     console.log(link)
-                    aElement.href = link
-                    console.log(link)
-                    console.log(aElement)
-
-                    console.log(aElement.href = Home.imageArray[i].split('shop-lnp-media')[1])
-
+                    console.log(withoutJpg)
+                    aElement.href = withoutJpg
                     aElement.target = '_blank'
                     aElement.appendChild(imageElement)
-                    // console.log(Home.imageArray[i])
                     document.getElementById('imageContainer').appendChild(aElement)
-                    count ++
 
+                    count ++
                     if (count == 10) {
                         break;
                     }

@@ -71,15 +71,20 @@
                 <h6 class="descriptionText">Download Image</h6>
                 <h6 class="descriptionPrice">$1.99</h6>
             </div>
-            <script
-                src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-                data-key="<%= stripeKey %>"
-                data-amount="99"
-                data-name="LNP Media"
-                data-description="Receive image to your email."
-                data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
-                data-locale="auto">
-            </script>
+            <form action="/stripe/downloadImage" method="POST"></form>
+                <input type="hidden" value="<%= imageUrl %>" name="user[name]">
+                <input type="submit">
+                <!-- <script
+                    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                    data-key="<%= stripeKey %>"
+                    data-amount="99"
+                    data-name="LNP Media"
+                    data-zip-code="true"
+                    data-description="Receive image to your email."
+                    data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+                    data-locale="auto">
+                </script> -->
+            </form>
         </div>
 
         <br>

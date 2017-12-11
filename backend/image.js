@@ -84,6 +84,11 @@ module.exports.sendTwilioMessage = function(req,res,next,message) {
 
 
 module.exports.downloadImage = function(req,res,next) {
+
+
+    console.log(req.body)
+    console.log(req.params)
+
     // Set your secret key: remember to change this to your live secret key in production
     // See your keys here: https://dashboard.stripe.com/account/apikeys
     var stripe;
@@ -92,6 +97,9 @@ module.exports.downloadImage = function(req,res,next) {
     } else {
         stripe = require("stripe")(process.env.STRIPE_DEBUG_BACK)
     }
+
+    console.log(req.body)
+    console.log(req.params)
 
     // Token is created using Checkout or Elements!
     // Get the payment token ID submitted by the form:
