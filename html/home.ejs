@@ -66,6 +66,16 @@
 
             },
             initialize:function() {
+
+                if (window.location.href.includes('https')) {
+
+                } else {
+                    if (window.location.href.includes('lnp')) {
+                        var url = 'https://' + window.location.host + window.location.pathname
+                        window.location.assign(url)
+                    }
+                }
+
                 var postUrl = '<%= global.rootUrl %>' + '/getHomeData'
                 var xhr = new XMLHttpRequest
                 xhr.open("POST", postUrl)
