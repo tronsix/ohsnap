@@ -48,12 +48,20 @@
                 for(var i = 0;i < Home.imageArray.length; i++) {
                     var imageElement = document.createElement('img')
                     imageElement.src = Home.imageArray[i]
+                    
 
                     var aElement = document.createElement('a')
-                    aElement.href = '/images/FunRun42'
+                    var link = 'https://lnp.media/images' + String(Home.imageArray[i].split('shop-lnp-media')[1])
+                    console.log(link)
+                    aElement.href = link
+                    console.log(link)
+                    console.log(aElement)
+
+                    console.log(aElement.href = Home.imageArray[i].split('shop-lnp-media')[1])
+
                     aElement.target = '_blank'
                     aElement.appendChild(imageElement)
-                    console.log(Home.imageArray[i])
+                    // console.log(Home.imageArray[i])
                     document.getElementById('imageContainer').appendChild(aElement)
                     count ++
 
