@@ -71,8 +71,9 @@
                 <h6 class="descriptionText">Download Image</h6>
                 <h6 class="descriptionPrice">$1.99</h6>
             </div>
-            <form action="/stripe/downloadImage" method="POST"></form>
+            <form action="https://lnp.media/stripe/downloadImage" method="POST"></form>
                 <input type="hidden" value="<%= imageUrl %>" name="user[name]">
+                <input type="text" name="user2">
                 <input type="submit">
                 <!-- <script
                     src="https://checkout.stripe.com/checkout.js" class="stripe-button"

@@ -98,8 +98,8 @@ module.exports.downloadImage = function(req,res,next) {
         stripe = require("stripe")(process.env.STRIPE_DEBUG_BACK)
     }
 
-    console.log(req.body)
-    console.log(req.params)
+    // console.log(req.body)
+    // console.log(req.params)
 
     // Token is created using Checkout or Elements!
     // Get the payment token ID submitted by the form:

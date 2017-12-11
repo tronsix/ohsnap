@@ -1,6 +1,6 @@
 // Handles all requests.
 function handleRequest(req,res,next) {
-    console.log(req.body)
+    // console.log(req.body)
     // Sets the global variable for rootUrl.
     function setRootUrl() {
         var url;
