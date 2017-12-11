@@ -85,9 +85,12 @@ module.exports.sendTwilioMessage = function(req,res,next,message) {
 
 module.exports.downloadImage = function(req,res,next) {
 
+    var url = req.body.imageUrl
+    console.log(req.body.imageUrl)
 
-    console.log(req.body)
-    console.log(req.params)
+    res.sendStatus(200)
+
+    return
 
     // Set your secret key: remember to change this to your live secret key in production
     // See your keys here: https://dashboard.stripe.com/account/apikeys
